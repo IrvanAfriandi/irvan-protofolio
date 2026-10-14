@@ -87,12 +87,10 @@ export default function RelatedExperience() {
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [modalViewMode, setModalViewMode] = useState('pdf'); // 'pdf' | 'image'
     const [iframeLoading, setIframeLoading] = useState(true);
-    const [activeCardIdx, setActiveCardIdx] = useState(0);
 
     const headerRef = useRef(null);
     const modalRef = useRef(null);
-    const sliderRef = useRef(null);
-    const cardsRef = useRef(null);
+    const gridRef = useRef(null);
 
     const currentExp = selectedExperience || experiences[0];
     const driveFileId = getGoogleDriveFileId(currentExp.certificate);
@@ -118,8 +116,8 @@ export default function RelatedExperience() {
     // Header GSAP Reveal Animation
     useEffect(() => {
         const headerEl = headerRef.current;
-        const cardsEl = cardsRef.current;
-        if (!headerEl || !cardsEl) return;
+        const gridEl = gridRef.current;
+        if (!headerEl || !gridEl) return;
 
         const ctx = gsap.context(() => {
             // Header animation
@@ -140,56 +138,22 @@ export default function RelatedExperience() {
             );
 
             // Cards stagger animation
-            gsap.from('.we-card',
-                {
-                    scrollTrigger: {
-                        trigger: cardsEl,
-                        start: 'top 85%',
-                        toggleActions: 'play none none reverse',
-                    },
-                    opacity: 0,
-                    x: 50,
-                    duration: 0.6,
-                    stagger: 0.1,
-                    ease: 'power3.out',
-                }
-            );
+            gsap.from('.we-card', {
+                y: 40,
+                opacity: 0,
+                duration: 0.6,
+                stagger: 0.12,
+                ease: 'power3.out',
+                scrollTrigger: {
+                    trigger: gridEl,
+                    start: 'top 85%',
+                    toggleActions: 'play none none reverse',
+                },
+            });
         });
 
         return () => ctx.revert();
     }, []);
-
-    // Horizontal scroll functions
-    const scrollToCard = (index) => {
-        if (!cardsRef.current) return;
-        const cards = cardsRef.current.querySelectorAll('.we-card');
-        if (cards[index]) {
-            cards[index].scrollIntoView({
-                behavior: 'smooth',
-                block: 'nearest',
-                inline: 'center'
-            });
-            setActiveCardIdx(index);
-        }
-    };
-
-    const handlePrev = () => {
-        const newIdx = activeCardIdx > 0 ? activeCardIdx - 1 : experiences.length - 1;
-        scrollToCard(newIdx);
-    };
-
-    const handleNext = () => {
-        const newIdx = activeCardIdx < experiences.length - 1 ? activeCardIdx + 1 : 0;
-        scrollToCard(newIdx);
-    };
-
-    // Handle card click to open modal
-    const handleCardClick = (exp, idx) => {
-        const fileId = getGoogleDriveFileId(exp.certificate);
-        setSelectedExperience(exp);
-        setActiveCardIdx(idx);
-        handleOpenModal(exp, fileId ? 'pdf' : 'image');
-    };
 
     // Prevent main page scrolling when modal preview is open & ESC to close
     useEffect(() => {
@@ -271,135 +235,102 @@ export default function RelatedExperience() {
                     </h2>
                 </div>
 
-                {/* Certificate Cards Slider */}
-                <div className="we-slider-wrapper">
-                    <button
-                        type="button"
-                        className="we-slider-nav we-slider-nav--prev"
-                        onClick={handlePrev}
-                        aria-label="Previous certificate"
-                    >
-                        <i className="fas fa-chevron-left" />
-                    </button>
+                {/* Certificate Cards Grid */}
+                <div ref={gridRef} className="we-grid">
+                    {experiences.map((exp, idx) => {
+                        const fileId = getGoogleDriveFileId(exp.certificate);
 
-                    <div ref={cardsRef} className="we-slider">
-                        {experiences.map((exp, idx) => {
-                            const fileId = getGoogleDriveFileId(exp.certificate);
+                        return (
+                            <article
+                                key={exp.id}
+                                className="we-card"
+                                onClick={() => handleOpenModal(exp, fileId ? 'pdf' : 'image')}
+                            >
+                                {/* Card Glow Effect */}
+                                <div className="we-card-glow" />
 
-                            return (
-                                <article
-                                    key={exp.id}
-                                    className={`we-card ${idx === activeCardIdx ? 'active' : ''}`}
-                                    onClick={() => handleCardClick(exp, idx)}
-                                >
-                                    {/* Card Glow Effect */}
-                                    <div className="we-card-glow" />
+                                {/* Thumbnail */}
+                                <div className="we-card-image">
+                                    <img
+                                        src={exp.image}
+                                        alt={exp.title}
+                                        loading="lazy"
+                                        decoding="async"
+                                        onError={(e) => {
+                                            if (e.target.src !== PLACEHOLDER_IMAGE && !e.target.src.endsWith(PLACEHOLDER_IMAGE)) {
+                                                e.target.src = PLACEHOLDER_IMAGE;
+                                            }
+                                        }}
+                                    />
 
-                                    {/* Thumbnail */}
-                                    <div className="we-card-image">
-                                        <img
-                                            src={exp.image}
-                                            alt={exp.title}
-                                            loading="lazy"
-                                            decoding="async"
-                                            onError={(e) => {
-                                                if (e.target.src !== PLACEHOLDER_IMAGE && !e.target.src.endsWith(PLACEHOLDER_IMAGE)) {
-                                                    e.target.src = PLACEHOLDER_IMAGE;
-                                                }
+                                    {/* Year Badge */}
+                                    <div className="we-card-badge we-card-badge--year">
+                                        <i className="far fa-calendar-alt" />
+                                        {exp.year}
+                                    </div>
+
+                                    {/* Category Badge */}
+                                    <div className="we-card-badge we-card-badge--category">
+                                        <i className={`fas ${exp.icon || 'fa-certificate'}`} />
+                                        {exp.category || 'Sertifikat'}
+                                    </div>
+
+                                    {/* Hover Overlay */}
+                                    <div className="we-card-overlay">
+                                        <div className="we-card-overlay-icon">
+                                            <i className={`fas ${fileId ? 'fa-file-pdf' : 'fa-expand'}`} />
+                                        </div>
+                                        <span className="we-card-overlay-text">Lihat Preview</span>
+                                    </div>
+                                </div>
+
+                                {/* Content */}
+                                <div className="we-card-content">
+                                    <div className="we-card-header">
+                                        <h3 className="we-card-title">{exp.title}</h3>
+                                        <p className="we-card-role">
+                                            <i className="fas fa-award" />
+                                            {exp.role}
+                                        </p>
+                                    </div>
+
+                                    <p className="we-card-description">{exp.description}</p>
+
+                                    <div className="we-card-tags">
+                                        {exp.tags.map((tag, tagIdx) => (
+                                            <span key={tagIdx} className="we-card-tag">{tag}</span>
+                                        ))}
+                                    </div>
+
+                                    <div className="we-card-actions">
+                                        <button
+                                            className="we-btn we-btn--primary"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleOpenModal(exp, fileId ? 'pdf' : 'image');
                                             }}
-                                        />
+                                        >
+                                            <i className="fas fa-eye" />
+                                            Lihat Detail
+                                        </button>
 
-                                        {/* Year Badge */}
-                                        <div className="we-card-badge we-card-badge--year">
-                                            <i className="far fa-calendar-alt" />
-                                            {exp.year}
-                                        </div>
-
-                                        {/* Category Badge */}
-                                        <div className="we-card-badge we-card-badge--category">
-                                            <i className={`fas ${exp.icon || 'fa-certificate'}`} />
-                                            {exp.category || 'Sertifikat'}
-                                        </div>
-
-                                        {/* Hover Overlay */}
-                                        <div className="we-card-overlay">
-                                            <div className="we-card-overlay-icon">
-                                                <i className={`fas ${fileId ? 'fa-file-pdf' : 'fa-expand'}`} />
-                                            </div>
-                                            <span className="we-card-overlay-text">Lihat Preview</span>
-                                        </div>
-                                    </div>
-
-                                    {/* Content */}
-                                    <div className="we-card-content">
-                                        <div className="we-card-header">
-                                            <h3 className="we-card-title">{exp.title}</h3>
-                                            <p className="we-card-role">
-                                                <i className="fas fa-award" />
-                                                {exp.role}
-                                            </p>
-                                        </div>
-
-                                        <p className="we-card-description">{exp.description}</p>
-
-                                        <div className="we-card-tags">
-                                            {exp.tags.map((tag, tagIdx) => (
-                                                <span key={tagIdx} className="we-card-tag">{tag}</span>
-                                            ))}
-                                        </div>
-
-                                        <div className="we-card-actions">
-                                            <button
-                                                className="we-btn we-btn--primary"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleOpenModal(exp, fileId ? 'pdf' : 'image');
-                                                }}
+                                        {exp.certificate && (
+                                            <a
+                                                href={exp.certificate}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="we-btn we-btn--secondary"
+                                                onClick={(e) => e.stopPropagation()}
+                                                title="Buka di Google Drive"
                                             >
-                                                <i className="fas fa-eye" />
-                                                Lihat Detail
-                                            </button>
-
-                                            {exp.certificate && (
-                                                <a
-                                                    href={exp.certificate}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="we-btn we-btn--secondary"
-                                                    onClick={(e) => e.stopPropagation()}
-                                                    title="Buka di Google Drive"
-                                                >
-                                                    <i className="fas fa-external-link-alt" />
-                                                </a>
-                                            )}
-                                        </div>
+                                                <i className="fas fa-external-link-alt" />
+                                            </a>
+                                        )}
                                     </div>
-                                </article>
-                            );
-                        })}
-                    </div>
-
-                    <button
-                        type="button"
-                        className="we-slider-nav we-slider-nav--next"
-                        onClick={handleNext}
-                        aria-label="Next certificate"
-                    >
-                        <i className="fas fa-chevron-right" />
-                    </button>
-                </div>
-
-                {/* Dot Indicators */}
-                <div className="we-slider-dots">
-                    {experiences.map((exp, idx) => (
-                        <button
-                            key={exp.id}
-                            type="button"
-                            className={`we-slider-dot ${idx === activeCardIdx ? 'active' : ''}`}
-                            onClick={() => scrollToCard(idx)}
-                            aria-label={`Go to certificate ${idx + 1}`}
-                        />
-                    ))}
+                                </div>
+                            </article>
+                        );
+                    })}
                 </div>
             </div>
 
