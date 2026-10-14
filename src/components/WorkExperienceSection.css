@@ -752,3 +752,67 @@
     padding: 0.25rem 0.5rem;
   }
 }
+
+/* ============================================================
+   SEE MORE BUTTON
+   ============================================================ */
+.exp-see-more-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2.5rem;
+}
+
+.exp-see-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 2rem;
+  background: linear-gradient(135deg, #1d252c, #2d3748);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-radius: 999px;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: 'Manrope', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow:
+    0 4px 15px rgba(0, 0, 0, 0.2),
+    0 0 20px rgba(220, 38, 38, 0.1);
+}
+
+.exp-see-more-btn:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  border-color: rgba(220, 38, 38, 0.6);
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 25px rgba(220, 38, 38, 0.35),
+    0 0 30px rgba(220, 38, 38, 0.2);
+}
+
+.exp-see-more-btn:active {
+  transform: translateY(0);
+}
+
+.exp-see-more-btn i {
+  font-size: 0.75rem;
+  transition: transform 0.3s ease;
+}
+
+.exp-see-more-btn:hover i {
+  transform: translateY(3px);
+}
+
+.exp-see-more-btn.show-less {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  border-color: rgba(220, 38, 38, 0.6);
+}
+
+.exp-see-more-btn.show-less:hover {
+  background: linear-gradient(135deg, #1d252c, #2d3748);
+  border-color: rgba(220, 38, 38, 0.3);
+}
+
+.exp-see-more-btn.show-less:hover i {
+  transform: translateY(-3px);
+}

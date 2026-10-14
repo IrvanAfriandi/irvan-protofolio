@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import '../styles/section-header.css';
 import './WorkExperienceSection.css';
 
@@ -235,6 +235,8 @@ const ExperienceCard = ({ experience, index }) => {
 export default function WorkExperienceSection() {
   const sectionRef = useRef(null);
   const headerRef = useRef(null);
+  const INITIAL_SHOW = 1;
+  const [visibleCount, setVisibleCount] = useState(INITIAL_SHOW);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -267,6 +269,17 @@ export default function WorkExperienceSection() {
     return () => headerObserver.disconnect();
   }, []);
 
+  const handleToggle = () => {
+    if (visibleCount >= WORK_EXPERIENCE.length) {
+      setVisibleCount(INITIAL_SHOW);
+    } else {
+      setVisibleCount(WORK_EXPERIENCE.length);
+    }
+  };
+
+  const visibleExperiences = WORK_EXPERIENCE.slice(0, visibleCount);
+  const hasMore = visibleCount < WORK_EXPERIENCE.length;
+
   return (
     <section ref={sectionRef} id="work-experience" className="work-experience-section">
       <div className="work-experience-inner">
@@ -289,13 +302,25 @@ export default function WorkExperienceSection() {
 
         {/* Cards Container */}
         <div className="exp-cards-container">
-          {WORK_EXPERIENCE.map((experience, index) => (
+          {visibleExperiences.map((experience, index) => (
             <ExperienceCard
               key={experience.id}
               experience={experience}
               index={index}
             />
           ))}
+        </div>
+
+        {/* See More / Show Less Button */}
+        <div className="exp-see-more-container">
+          <button
+            type="button"
+            className={`exp-see-more-btn ${!hasMore ? 'show-less' : ''}`}
+            onClick={handleToggle}
+          >
+            <span>{hasMore ? 'See More' : 'Show Less'}</span>
+            <i className={`fas fa-chevron-${hasMore ? 'down' : 'up'}`} />
+          </button>
         </div>
       </div>
     </section>
