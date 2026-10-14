@@ -1,5 +1,8 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export const SLIDE_DATA = [
   {
@@ -86,17 +89,15 @@ const TOTAL = SLIDE_DATA.length;
 let activeIdx = 1;
 let isAnimating = false;
 let autoSlideInterval = null;
-let titleAnimationTimer = null;
+let savedScrollY = 0;
 
 export default function Karya() {
+  const sectionRef = useRef(null);
   const sliderRef = useRef(null);
-  const titleDivRef = useRef(null);
-  const captionDivRef = useRef(null);
-  const previewDivRef = useRef(null);
   const prevArrowRef = useRef(null);
   const nextArrowRef = useRef(null);
   const modalRef = useRef(null);
-  const lbTouchRef = useRef({ x: 0, y: 0 });
+  const previewRef = useRef(null);
 
   const [modalProject, setModalProject] = useState(null);
   const [galleryIdx, setGalleryIdx] = useState(0);
@@ -104,34 +105,58 @@ export default function Karya() {
   const [activeSlideIdx, setActiveSlideIdx] = useState(0);
 
   const openModal = useCallback((project) => {
+    // Save scroll position first
+    savedScrollY = window.scrollY;
     setModalProject(project);
     setGalleryIdx(0);
     clearInterval(autoSlideInterval);
-    // Freeze background: save scroll, pin body with position:fixed
-    const scrollY = window.scrollY;
+    if (autoSlideResumeTimer.current) clearTimeout(autoSlideResumeTimer.current);
+    // Freeze background: pin body with position:fixed
     document.body.style.position = 'fixed';
-    document.body.style.top = `-${scrollY}px`;
+    document.body.style.top = `-${savedScrollY}px`;
     document.body.style.left = '0';
     document.body.style.right = '0';
+    document.body.style.width = '100%';
     document.body.style.overflow = 'hidden';
-    document.body.dataset.scrollY = scrollY;
+    document.body.style.height = '100%';
     document.body.classList.add('karya-modal-open');
+    // Hide navbar when modal is open - use inline styles to ensure it's hidden
+    const navbar = document.querySelector('.navbar-shell');
+    if (navbar) {
+      navbar.classList.remove('nav-visible');
+      navbar.classList.add('nav-hidden');
+      navbar.style.visibility = 'hidden';
+      navbar.style.opacity = '0';
+      navbar.style.pointerEvents = 'none';
+    }
   }, []);
 
   const closeModal = useCallback(() => {
     setModalProject(null);
     setPhotoLightbox(null);
     // Restore exact scroll position
-    const scrollY = parseInt(document.body.dataset.scrollY || '0', 10);
     document.body.style.position = '';
     document.body.style.top = '';
     document.body.style.left = '';
     document.body.style.right = '';
+    document.body.style.width = '';
     document.body.style.overflow = '';
-    delete document.body.dataset.scrollY;
+    document.body.style.height = '';
     document.body.classList.remove('karya-modal-open');
-    window.scrollTo(0, scrollY);
-    startAutoSlide();
+    // Show navbar when modal is closed - remove inline styles
+    const navbar = document.querySelector('.navbar-shell');
+    if (navbar) {
+      navbar.classList.remove('nav-hidden');
+      navbar.classList.add('nav-visible');
+      navbar.style.visibility = '';
+      navbar.style.opacity = '';
+      navbar.style.pointerEvents = '';
+    }
+    // Restore scroll position after styles are restored
+    requestAnimationFrame(() => {
+      window.scrollTo(0, savedScrollY);
+    });
+    scheduleAutoSlideResume();
   }, []);
 
   // Keyboard navigation for photo lightbox
@@ -166,42 +191,6 @@ export default function Karya() {
     while (newIdx > TOTAL) newIdx -= TOTAL;
     return newIdx;
   }, []);
-
-  const clearTitleTimer = () => {
-    if (titleAnimationTimer) clearTimeout(titleAnimationTimer);
-    titleAnimationTimer = null;
-  };
-
-  const animateTitleToCaption = (name) => {
-    if (!name) return;
-    if (titleDivRef.current) {
-      const h1 = titleDivRef.current.querySelector('h1');
-      if (h1) h1.innerText = name;
-      titleDivRef.current.classList.add('karya-title-visible');
-    }
-    if (captionDivRef.current) {
-      captionDivRef.current.innerText = name;
-      captionDivRef.current.classList.add('karya-show');
-    }
-  };
-
-  const updatePreview = (content) => {
-    if (!previewDivRef.current || !content?.img) return;
-    const newImg = document.createElement('img');
-    newImg.src = content.img;
-    newImg.alt = content.name;
-    previewDivRef.current.appendChild(newImg);
-    gsap.fromTo(newImg,
-      { opacity: 0, scale: 1.15 },
-      {
-        opacity: 1, scale: 1, duration: 1.5, ease: "power2.out", delay: 0.2,
-        onComplete: () => {
-          const old = previewDivRef.current?.querySelectorAll('img:not(:last-child)');
-          old?.forEach(s => s.remove());
-        }
-      }
-    );
-  };
 
   const createSlide = (content, className) => {
     if (!content) return document.createElement('div');
@@ -457,21 +446,119 @@ export default function Karya() {
       gsap.set('.karya-slide-container.active', { top: '53%', left: '50%', scale: 1, clipPath: 'none' });
     }
     setActiveSlideIdx(activeIdx - 1);
-
-    if (titleDivRef.current) {
-      const h1 = titleDivRef.current.querySelector('h1');
-      if (h1) h1.innerText = "";
-      titleDivRef.current.classList.remove('karya-title-visible');
-    }
-    if (captionDivRef.current) {
-      captionDivRef.current.innerText = "";
-      captionDivRef.current.classList.remove('karya-show');
-    }
-    setTimeout(() => animateTitleToCaption(SLIDE_DATA[0].name), 500);
-    updatePreview(SLIDE_DATA[0]);
   };
 
   useEffect(() => {
+    // Intersection Observer for scroll-triggered entrance animations
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px 0px -10% 0px',
+      threshold: 0.15
+    };
+
+    let hasAnimated = false;
+
+    const triggerEntrance = () => {
+      if (hasAnimated) return;
+      hasAnimated = true;
+
+      // Animate header elements with stagger
+      const header = sectionRef.current?.querySelector('.karya-section-header');
+      if (header) {
+        gsap.fromTo(header.querySelectorAll('.section-label, .section-title, .section-subtitle'),
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1, y: 0,
+            duration: 0.9,
+            ease: 'power3.out',
+            stagger: 0.12,
+            delay: 0.1
+          }
+        );
+      }
+
+      // Animate slider with elegant fade
+      const slider = sectionRef.current?.querySelector('.karya-slider');
+      if (slider) {
+        gsap.fromTo(slider,
+          { opacity: 0, y: 50, scale: 0.97 },
+          {
+            opacity: 1, y: 0, scale: 1,
+            duration: 1.1,
+            ease: 'power3.out',
+            delay: 0.35
+          }
+        );
+      }
+
+      // Animate controls
+      const controls = sectionRef.current?.querySelector('.karya-bottom-controls');
+      if (controls) {
+        gsap.fromTo(controls,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out', delay: 0.7 }
+        );
+      }
+    };
+
+    const entranceObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          triggerEntrance();
+        }
+      });
+    }, observerOptions);
+
+    // Check if section is already visible on mount
+    if (sectionRef.current) {
+      const rect = sectionRef.current.getBoundingClientRect();
+      const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+      if (isVisible) {
+        triggerEntrance();
+      } else {
+        entranceObserver.observe(sectionRef.current);
+      }
+    }
+
+    // 3D Tilt Effect for Active Card
+    const handleMouseMove = (e) => {
+      const activeCard = sliderRef.current?.querySelector('.karya-slide-container.active');
+      if (!activeCard) return;
+
+      const rect = activeCard.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      const rotateX = (y - centerY) / 40;
+      const rotateY = (centerX - x) / 40;
+
+      gsap.to(activeCard, {
+        rotateX: rotateX,
+        rotateY: rotateY,
+        transformPerspective: 1000,
+        duration: 0.4,
+        ease: 'power2.out'
+      });
+    };
+
+    const handleMouseLeave = () => {
+      const activeCard = sliderRef.current?.querySelector('.karya-slide-container.active');
+      if (activeCard) {
+        gsap.to(activeCard, {
+          rotateX: 0,
+          rotateY: 0,
+          duration: 0.6,
+          ease: 'power3.out'
+        });
+      }
+    };
+
+    const sliderNode = sliderRef.current;
+    sliderNode?.addEventListener('mousemove', handleMouseMove);
+    sliderNode?.addEventListener('mouseleave', handleMouseLeave);
+
     initSlides();
     startAutoSlide();
 
@@ -523,7 +610,6 @@ export default function Karya() {
       }
     };
 
-    const sliderNode = sliderRef.current;
     const prevArrowNode = prevArrowRef.current;
     const nextArrowNode = nextArrowRef.current;
 
@@ -536,11 +622,13 @@ export default function Karya() {
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
+      entranceObserver.disconnect();
       clearInterval(autoSlideInterval);
-      clearTitleTimer();
       sliderNode?.removeEventListener('click', handleClickSlide);
       sliderNode?.removeEventListener('touchstart', handleTouchStart);
       sliderNode?.removeEventListener('touchend', handleTouchEnd);
+      sliderNode?.removeEventListener('mousemove', handleMouseMove);
+      sliderNode?.removeEventListener('mouseleave', handleMouseLeave);
       prevArrowNode?.removeEventListener('click', handlePrevArrow);
       nextArrowNode?.removeEventListener('click', handleNextArrow);
       window.removeEventListener('resize', handleResize);
@@ -549,8 +637,107 @@ export default function Karya() {
   }, [getIndex, openModal, closeModal]);
 
   return (
-    <section id="project" className="karya-section relative py-16 sm:py-24">
+    <section id="project" ref={sectionRef} className="karya-section relative py-16 sm:py-24">
+      {/* Animated Background Elements */}
+      <div className="karya-bg-orb karya-bg-orb-1" aria-hidden="true" />
+      <div className="karya-bg-orb karya-bg-orb-2" aria-hidden="true" />
+      <div className="karya-bg-orb karya-bg-orb-3" aria-hidden="true" />
+      <div className="karya-bg-grid" aria-hidden="true" />
+
       <style>{`
+        /* Prevent background scroll when modal is open */
+        body.karya-modal-open {
+          overflow: hidden !important;
+          position: fixed !important;
+          width: 100% !important;
+          touch-action: none;
+        }
+
+        /* Hide navbar when modal is open */
+        body.karya-modal-open ~ * .navbar-shell,
+        body.karya-modal-open .navbar-shell {
+          display: none !important;
+          visibility: hidden !important;
+        }
+
+        /* Ensure modal backdrop is the only scrollable area */
+        .karya-modal-backdrop {
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          bottom: 0 !important;
+          overflow-y: auto !important;
+          overscroll-behavior: contain;
+        }
+
+        /* ==================== ENTRANCE ANIMATION STYLES ==================== */
+        .karya-slider {
+          opacity: 0;
+          transform: translateY(50px) scale(0.97);
+        }
+
+        /* Animated Background Orbs */
+        .karya-bg-orb {
+          position: absolute;
+          border-radius: 50%;
+          filter: blur(80px);
+          pointer-events: none;
+          z-index: 0;
+        }
+        .karya-bg-orb-1 {
+          top: 10%;
+          left: -5%;
+          width: 400px;
+          height: 400px;
+          background: radial-gradient(circle, rgba(220, 38, 38, 0.12), transparent 70%);
+          animation: karyaOrbFloat1 15s ease-in-out infinite;
+        }
+        .karya-bg-orb-2 {
+          bottom: 20%;
+          right: -8%;
+          width: 350px;
+          height: 350px;
+          background: radial-gradient(circle, rgba(168, 85, 247, 0.08), transparent 70%);
+          animation: karyaOrbFloat2 18s ease-in-out infinite reverse;
+        }
+        .karya-bg-orb-3 {
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 500px;
+          height: 500px;
+          background: radial-gradient(circle, rgba(220, 38, 38, 0.06), transparent 60%);
+          animation: karyaOrbPulse 12s ease-in-out infinite;
+        }
+
+        @keyframes karyaOrbFloat1 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33% { transform: translate(30px, -20px) scale(1.05); }
+          66% { transform: translate(-20px, 30px) scale(0.95); }
+        }
+        @keyframes karyaOrbFloat2 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          40% { transform: translate(-40px, 20px) scale(1.08); }
+          70% { transform: translate(20px, -30px) scale(0.92); }
+        }
+        @keyframes karyaOrbPulse {
+          0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+          50% { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+        }
+
+        /* Subtle Grid Pattern */
+        .karya-bg-grid {
+          position: absolute;
+          inset: 0;
+          background-image:
+            linear-gradient(rgba(220, 38, 38, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(220, 38, 38, 0.03) 1px, transparent 1px);
+          background-size: 60px 60px;
+          z-index: 0;
+          pointer-events: none;
+        }
+
         .karya-slider {
           position: relative;
           width: 100%;
@@ -558,10 +745,11 @@ export default function Karya() {
           min-height: 660px;
           height: clamp(660px, 82svh, 780px);
           overflow: hidden;
-          background: #f7f4ee;
+          background: linear-gradient(180deg, #f7f4ee 0%, #faf8f4 50%, #f5f2ec 100%);
           font-family: 'Manrope', sans-serif;
           margin: 0;
           padding: 0;
+          z-index: 1;
         }
 
         /* Unified Header */
@@ -569,6 +757,8 @@ export default function Karya() {
           text-align: center;
           max-width: 55rem;
           margin: 0 auto 2rem;
+          position: relative;
+          z-index: 2;
         }
 
         /* Card Slides */
@@ -584,11 +774,14 @@ export default function Karya() {
           overflow: hidden;
           cursor: pointer;
           border: 1px solid rgba(255, 255, 255, 0.16);
-          box-shadow: 
+          box-shadow:
             0 24px 48px -18px rgba(46, 39, 31, 0.35),
             0 0 24px rgba(220, 38, 38, 0.06),
             inset 0 1px 2px rgba(255, 255, 255, 0.3);
           transition: border-color 0.4s ease, box-shadow 0.4s ease, filter 0.4s ease;
+          will-change: transform;
+          transform-style: preserve-3d;
+          backface-visibility: hidden;
         }
 
         /* KILAPAN SHINE GLOSSY SEPERTI KACA SAAT HOVER */
@@ -615,7 +808,7 @@ export default function Karya() {
         }
         .karya-slide-container:hover {
           border-color: rgba(220, 38, 38, 0.7);
-          box-shadow: 
+          box-shadow:
             0 40px 80px -15px rgba(0, 0, 0, 0.98),
             0 0 50px rgba(220, 38, 38, 0.4),
             inset 0 0 0 1px rgba(220, 38, 38, 0.25),
@@ -627,6 +820,7 @@ export default function Karya() {
           width: 100%;
           height: 100%;
           background: #0c0c12;
+          overflow: hidden;
         }
         .karya-slide-img img {
           width: 100%;
@@ -635,6 +829,7 @@ export default function Karya() {
           transform: scale(1.02);
           transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
           filter: brightness(0.9) contrast(1.03);
+          will-change: transform;
         }
         .karya-slide-container:hover .karya-slide-img img {
           transform: scale(1.08);
@@ -667,6 +862,12 @@ export default function Karya() {
           font-weight: 500;
           letter-spacing: 0.04em;
           color: #fee2e2;
+          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .karya-slide-container:hover .karya-card-category {
+          background: rgba(220, 38, 38, 0.75);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
         }
 
         .karya-card-bottom-info {
@@ -711,7 +912,17 @@ export default function Karya() {
           backdrop-filter: blur(8px);
           color: #d1d5db;
           border: 1px solid rgba(255, 255, 255, 0.1);
+          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
+        .karya-slide-container:hover .karya-card-tag {
+          background: rgba(255, 255, 255, 0.22);
+          color: #ffffff;
+          transform: translateY(-2px);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        .karya-slide-container:hover .karya-card-tag:nth-child(1) { transition-delay: 0.02s; }
+        .karya-slide-container:hover .karya-card-tag:nth-child(2) { transition-delay: 0.05s; }
+        .karya-slide-container:hover .karya-card-tag:nth-child(3) { transition-delay: 0.08s; }
 
         /* ACTIONS ROW */
         .karya-card-actions {
@@ -741,12 +952,22 @@ export default function Karya() {
           border: 1px solid rgba(255, 255, 255, 0.3);
           white-space: nowrap;
           cursor: pointer;
-          transition: background 0.25s ease, transform 0.25s ease;
+          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
           font-family: 'Manrope', sans-serif;
         }
         .karya-card-detail-btn:hover {
           background: rgba(255, 255, 255, 0.28);
           transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        .karya-card-detail-btn:active {
+          transform: translateY(0);
+        }
+        .karya-card-detail-btn svg {
+          transition: transform 0.3s ease;
+        }
+        .karya-card-detail-btn:hover svg {
+          transform: scale(1.15);
         }
 
         /* VISIT BADGE */
@@ -765,11 +986,21 @@ export default function Karya() {
           box-shadow: 0 6px 14px rgba(126, 44, 35, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.3);
           white-space: nowrap;
           text-decoration: none;
-          transition: transform 0.25s ease, background-color 0.25s ease;
+          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .karya-card-link-badge:hover {
-          background: rgba(185, 28, 28, 1);
+          background: linear-gradient(135deg, #dc2626, #b91c1c);
           transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4);
+        }
+        .karya-card-link-badge:active {
+          transform: translateY(0);
+        }
+        .karya-card-link-badge svg {
+          transition: transform 0.3s ease;
+        }
+        .karya-card-link-badge:hover svg {
+          transform: translate(2px, -2px);
         }
 
         .karya-slide-container.prev {
@@ -826,35 +1057,6 @@ export default function Karya() {
             inset 0 0 0 1px rgba(220, 38, 38, 0.3);
         }
 
-        .karya-slider-title {
-          position: absolute;
-          top: 17%;
-          left: clamp(1.5rem, 6vw, 6rem);
-          transform: none;
-          width: min(38%, 520px);
-          max-width: 1200px;
-          text-align: left;
-          z-index: 30;
-          pointer-events: none;
-          opacity: 0;
-          visibility: hidden;
-        }
-        .karya-slider-title.karya-title-visible {
-          opacity: 1;
-          visibility: visible;
-        }
-        .karya-slider-title h1 {
-          font-size: clamp(2rem, 4.5vw, 4rem);
-          font-weight: 700;
-          letter-spacing: -0.02em;
-          background: linear-gradient(135deg, #3d342a 0%, #7b3027 72%, #c83d32 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          text-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-          line-height: 1.15;
-          margin: 0;
-        }
-
         .karya-slider-preview {
           position: absolute;
           top: 0;
@@ -892,52 +1094,6 @@ export default function Karya() {
           z-index: 1;
         }
 
-        .karya-slide-caption {
-          position: absolute;
-          bottom: 2.5rem;
-          left: 2.5rem;
-          z-index: 35;
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-          background: rgba(255, 255, 255, 0.72);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          padding: 0.45rem 1.3rem;
-          border-radius: 7px;
-          border: 1px solid rgba(61, 52, 42, 0.14);
-          box-shadow: 0 10px 28px rgba(83, 64, 40, 0.12);
-          pointer-events: none;
-          opacity: 0;
-          transform: translateY(14px);
-          transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .karya-slide-caption.karya-show {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        .karya-cat-badge {
-          font-size: 0.68rem;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 0.08em;
-          padding: 0.15rem 0.5rem;
-          border-radius: 12px;
-          background: rgba(220, 38, 38, 0.15);
-          border: 1px solid rgba(220, 38, 38, 0.35);
-        }
-        .karya-slide-name {
-          font-size: 0.85rem;
-          font-weight: 600;
-          color: #ffffff;
-          letter-spacing: 0.02em;
-        }
-        .karya-caption-arrow {
-          display: flex;
-          align-items: center;
-          color: #ffb07c;
-        }
-
         /* BOTTOM CONTROLS PILL BAR */
         .karya-bottom-controls {
           position: absolute;
@@ -955,10 +1111,11 @@ export default function Karya() {
           -webkit-backdrop-filter: blur(20px);
           border-radius: 40px;
           border: 1px solid rgba(61, 52, 42, 0.14);
-          box-shadow: 
+          box-shadow:
             0 12px 32px -4px rgba(83, 64, 40, 0.18),
             0 2px 8px rgba(0, 0, 0, 0.04),
             inset 0 1px 1px rgba(255, 255, 255, 0.7);
+          opacity: 0;
         }
 
         .karya-nav-arrow {
@@ -992,7 +1149,10 @@ export default function Karya() {
           border-color: rgba(220, 38, 38, 0.5);
           color: #ffffff;
           transform: scale(1.08);
-          box-shadow: 0 6px 16px rgba(220, 38, 38, 0.35);
+          box-shadow: 0 6px 16px rgba(220, 38, 38, 0.35), 0 0 20px rgba(220, 38, 38, 0.2);
+        }
+        .karya-nav-arrow:hover svg {
+          filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
         }
         .karya-nav-arrow:active {
           transform: scale(0.94);
@@ -1012,11 +1172,11 @@ export default function Karya() {
           border: none;
           cursor: pointer;
           padding: 0;
-          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+          transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .karya-control-dot:hover {
           background: rgba(220, 38, 38, 0.6);
-          transform: scale(1.2);
+          transform: scale(1.25);
         }
         .karya-control-dot.active {
           width: 22px;
@@ -1024,6 +1184,12 @@ export default function Karya() {
           border-radius: 6px;
           background: linear-gradient(90deg, #dc2626, #ef4444);
           box-shadow: 0 2px 8px rgba(220, 38, 38, 0.4);
+          animation: karyaDotPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes karyaDotPulse {
+          0%, 100% { box-shadow: 0 2px 8px rgba(220, 38, 38, 0.4); }
+          50% { box-shadow: 0 2px 16px rgba(220, 38, 38, 0.6); }
         }
 
         .karya-footer {
@@ -1046,16 +1212,110 @@ export default function Karya() {
         /* MEDIA QUERY UNTUK MOBILE & TABLET (LEBAR ≤ 1024px) */
         @media (max-width: 1024px) {
           .karya-slider {
-            min-height: 580px;
-            height: clamp(580px, 80svh, 660px);
+            min-height: 420px;
+            height: clamp(420px, 70svh, 580px);
+          }
+          .karya-slide-container {
+            width: min(88%, 380px) !important;
+            height: clamp(260px, 45svh, 340px) !important;
+            top: 48% !important;
+            border-radius: 12px;
+          }
+          .karya-slide-container.active {
+            width: min(88%, 380px) !important;
+            height: clamp(260px, 45svh, 340px) !important;
+            top: 48% !important;
+          }
+          .karya-slide-container.prev,
+          .karya-slide-container.next {
+            display: none !important;
+          }
+          .karya-card-description {
+            -webkit-line-clamp: 2;
+            font-size: 0.68rem;
+          }
+          .karya-card-bottom-info {
+            bottom: 0.8rem;
+            left: 1rem;
+            right: 1rem;
+            gap: 0.4rem;
+          }
+          .karya-card-tags {
+            gap: 0.25rem;
+          }
+          .karya-card-tag {
+            font-size: 0.58rem;
+            padding: 0.15rem 0.4rem;
+          }
+          .karya-card-actions {
+            gap: 0.3rem;
+          }
+          .karya-card-detail-btn,
+          .karya-card-link-badge {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.6rem;
+          }
+          .karya-card-detail-btn svg,
+          .karya-card-link-badge svg {
+            width: 10px;
+            height: 10px;
+          }
+          .karya-card-category {
+            font-size: 0.6rem;
+            padding: 0.25rem 0.6rem;
+          }
+          .karya-card-top-info {
+            top: 0.8rem;
+            left: 0.8rem;
+          }
+          .karya-bottom-controls {
+            bottom: 0.8rem;
+            padding: 0.25rem 0.4rem;
+            gap: 0.5rem;
+          }
+          .karya-nav-arrow {
+            width: 32px;
+            height: 32px;
+          }
+          .karya-nav-arrow svg {
+            width: 14px;
+            height: 14px;
+          }
+          .karya-control-dot {
+            width: 6px;
+            height: 6px;
+          }
+          .karya-control-dot.active {
+            width: 16px;
+            height: 6px;
+          }
+          .karya-bg-orb {
+            display: none;
+          }
+          .karya-bg-grid {
+            opacity: 0.5;
+          }
+          .karya-footer {
+            display: none;
+          }
+        }
+
+        /* Mobile performance - disable heavy animations */
+        @media (prefers-reduced-motion: reduce) {
+          .karya-bg-orb,
+          .karya-control-dot.active,
+          @keyframes karyaOrbFloat1,
+          @keyframes karyaOrbFloat2,
+          @keyframes karyaOrbPulse {
+            animation: none !important;
           }
         }
 
         /* MODAL STYLES */
         .karya-modal-backdrop {
-          position: fixed;
+          position: fixed !important;
           inset: 0;
-          z-index: 9999;
+          z-index: 10060 !important;
           background: rgba(0, 0, 0, 0.78);
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
@@ -1065,6 +1325,16 @@ export default function Karya() {
           padding: 1rem;
           overflow-y: auto;
           animation: karyaFadeIn 0.25s ease-out;
+        }
+
+        /* Hide scrollbar but keep functionality */
+        .karya-modal-backdrop::-webkit-scrollbar {
+          width: 0px;
+          background: transparent;
+        }
+        .karya-modal-backdrop {
+          scrollbar-width: none;
+          -ms-overflow-style: none;
         }
 
         @keyframes karyaFadeIn {
@@ -1085,6 +1355,16 @@ export default function Karya() {
           box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(220, 38, 38, 0.15);
           animation: karyaModalUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
           color: #f3f4f6;
+        }
+
+        /* Hide scrollbar in modal dialog */
+        .karya-modal-dialog::-webkit-scrollbar {
+          width: 0px;
+          background: transparent;
+        }
+        .karya-modal-dialog {
+          scrollbar-width: none;
+          -ms-overflow-style: none;
         }
 
         @keyframes karyaModalUp {
@@ -1133,12 +1413,13 @@ export default function Karya() {
           align-items: center;
           justify-content: center;
           cursor: pointer;
-          transition: all 0.2s ease;
+          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .karya-modal-close:hover {
-          background: rgba(220, 38, 38, 0.2);
-          border-color: rgba(220, 38, 38, 0.4);
+          background: rgba(220, 38, 38, 0.25);
+          border-color: rgba(220, 38, 38, 0.5);
           color: #ffffff;
+          transform: rotate(90deg) scale(1.05);
         }
 
         .karya-modal-body {
@@ -1162,10 +1443,10 @@ export default function Karya() {
           object-fit: cover;
           display: block;
           cursor: zoom-in;
-          transition: transform 0.3s ease;
+          transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .karya-modal-hero-img:hover {
-          transform: scale(1.02);
+          transform: scale(1.03);
         }
 
         .karya-modal-img-caption {
@@ -1208,13 +1489,14 @@ export default function Karya() {
           cursor: pointer;
           padding: 0;
           opacity: 0.6;
-          transition: all 0.2s ease;
+          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .karya-modal-thumb-btn.active,
         .karya-modal-thumb-btn:hover {
           opacity: 1;
           border-color: #dc2626;
-          transform: translateY(-2px);
+          transform: translateY(-3px) scale(1.02);
+          box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
         }
         .karya-modal-thumb-btn img {
           width: 100%;
@@ -1351,12 +1633,13 @@ export default function Karya() {
           align-items: center;
           justify-content: center;
           cursor: pointer;
-          transition: all 0.2s ease;
+          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
           z-index: 10;
         }
         .karya-lightbox-close:hover {
           background: #dc2626;
           border-color: #ef4444;
+          transform: scale(1.1) rotate(90deg);
         }
 
         .karya-lightbox-nav {
@@ -1375,12 +1658,14 @@ export default function Karya() {
           align-items: center;
           justify-content: center;
           cursor: pointer;
-          transition: all 0.2s ease;
+          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
           z-index: 10;
         }
         .karya-lightbox-nav:hover {
-          background: #dc2626;
-          border-color: #ef4444;
+          background: linear-gradient(135deg, #dc2626, #b91c1c);
+          border-color: rgba(220, 38, 38, 0.5);
+          transform: translateY(-50%) scale(1.1);
+          box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
         }
         .karya-lightbox-nav.prev { left: 1.5rem; }
         .karya-lightbox-nav.next { right: 1.5rem; }
@@ -1426,18 +1711,7 @@ export default function Karya() {
 
       {/* Main Slider Area */}
       <div ref={sliderRef} className="karya-slider" role="region" aria-label="Project Showcase Slider">
-        <div ref={previewDivRef} className="karya-slider-preview" aria-hidden="true" />
         <div className="karya-ambient-glow" aria-hidden="true" />
-
-        <div ref={titleDivRef} className="karya-slider-title" aria-hidden="true">
-          <h1>{SLIDE_DATA[activeSlideIdx]?.name || ''}</h1>
-        </div>
-
-        <div ref={captionDivRef} className="karya-slide-caption" aria-hidden="true">
-          <span className="karya-cat-badge">{SLIDE_DATA[activeSlideIdx]?.category || 'Project'}</span>
-          <span className="karya-slide-name">{SLIDE_DATA[activeSlideIdx]?.name || ''}</span>
-          <span className="karya-caption-arrow">→</span>
-        </div>
 
         {/* Bottom Pill Navigation Bar */}
         <div className="karya-bottom-controls">
@@ -1478,11 +1752,6 @@ export default function Karya() {
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
           </button>
-        </div>
-
-        <div className="karya-footer" aria-hidden="true">
-          <span className="icon">⇄</span>
-          <span>Geser atau klik kartu</span>
         </div>
       </div>
 

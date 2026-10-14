@@ -316,6 +316,8 @@ export default function Navbar() {
     showNav(shell);
 
     const onScroll = () => {
+      // Don't handle scroll when modal is open
+      if (document.body.classList.contains('karya-modal-open')) return;
       if (menuOpenRef.current) return;
 
       const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
