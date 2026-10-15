@@ -4,6 +4,18 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SectionBackdrop from './SectionBackdrop';
 import './ProfessionalBackgroundSection.css';
 
+// Import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/effect-coverflow';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+
+// import required modules
+import { EffectCoverflow, Pagination, Navigation } from 'swiper/modules';
+
 gsap.registerPlugin(ScrollTrigger);
 
 // ============ HELPER GOOGLE DRIVE ============
@@ -62,6 +74,56 @@ export const rawExperiences = [
         year: '2024',
         certificate: 'https://drive.google.com/file/d/1XY4nEWlOES9m9tWEgYsDiRC1YbGAQbeO/view',
     },
+    // ── Data Duplikat (4 entries) ──
+    {
+        id: 5,
+        title: 'Sertifikat HKI',
+        role: 'Hak Atas Kekayaan Intelektual',
+        issuer: 'Kementerian Hukum & HAM RI',
+        category: 'Lisensi & HKI',
+        icon: 'fa-shield-halved',
+        tags: ['Hak Cipta', 'Inovasi Digital', 'SILADATA'],
+        description: 'Pengakuan resmi Hak Cipta atas inovasi software SILADATA (Sistem Layanan Dokumen Akreditasi) terdaftar di Kemenkumham RI.',
+        year: '2026',
+        certificate: 'https://drive.google.com/file/d/1ZHm_D_ajLQtBQiuUYI6U84aOnoYEoJ4L/view?usp=drive_link',
+    },
+    {
+        id: 6,
+        title: 'Sertifikat BNSP',
+        role: 'Badan Nasional Sertifikasi Profesi',
+        issuer: 'BNSP Republik Indonesia',
+        category: 'Sertifikasi Profesi',
+        icon: 'fa-award',
+        tags: ['Kompetensi Nasional', 'Teknologi Informasi'],
+        description: 'Sertifikasi kompetensi profesional nasional bidang Teknologi Informasi dengan standar industri yang teruji.',
+        year: '2025',
+        certificate: 'https://drive.google.com/file/d/1rsrf3LQ5EeqACZ4O7PvpAdpmTk8snZ5J/view?pli=1',
+        image: '/img/sertif.webp',
+    },
+    {
+        id: 7,
+        title: 'Sertifikat UKK',
+        role: 'Uji Kompetensi Keahlian RPL',
+        issuer: 'Kemendikbud & Industri RPL',
+        category: 'Uji Kompetensi',
+        icon: 'fa-code',
+        tags: ['Rekayasa Perangkat Lunak', 'Pemrograman Web'],
+        description: 'Uji kompetensi teknis Rekayasa Perangkat Lunak dalam pengembangan aplikasi web & analisis sistem.',
+        year: '2024',
+        certificate: 'https://drive.google.com/file/d/1XY4nEWlOES9m9tWEgYsDiRC1YbGAQbeO/view',
+    },
+    {
+        id: 8,
+        title: 'Sertifikat HKI',
+        role: 'Hak Atas Kekayaan Intelektual',
+        issuer: 'Kementerian Hukum & HAM RI',
+        category: 'Lisensi & HKI',
+        icon: 'fa-shield-halved',
+        tags: ['Hak Cipta', 'Inovasi Digital', 'SILADATA'],
+        description: 'Pengakuan resmi Hak Cipta atas inovasi software SILADATA (Sistem Layanan Dokumen Akreditasi) terdaftar di Kemenkumham RI.',
+        year: '2026',
+        certificate: 'https://drive.google.com/file/d/1ZHm_D_ajLQtBQiuUYI6U84aOnoYEoJ4L/view?usp=drive_link',
+    },
 ];
 
 // ============ MAPPING GAMBAR ============
@@ -90,7 +152,7 @@ export default function RelatedExperience() {
 
     const headerRef = useRef(null);
     const modalRef = useRef(null);
-    const gridRef = useRef(null);
+    const sliderContainerRef = useRef(null);
 
     const currentExp = selectedExperience || experiences[0];
     const driveFileId = getGoogleDriveFileId(currentExp.certificate);
@@ -113,46 +175,63 @@ export default function RelatedExperience() {
         });
     }, []);
 
-    // Header GSAP Reveal Animation
+    // Header GSAP Reveal Animation & Refresh Trigger
     useEffect(() => {
         const headerEl = headerRef.current;
-        const gridEl = gridRef.current;
-        if (!headerEl || !gridEl) return;
+        const sliderEl = sliderContainerRef.current;
+        if (!headerEl || !sliderEl) return;
+
+        // Mencegah bug GSAP salah kalkulasi offset yang menyebabkan section melompat
+        const refreshGSAP = () => ScrollTrigger.refresh();
+        window.addEventListener('resize', refreshGSAP);
+        const timer1 = setTimeout(refreshGSAP, 500);
+        const timer2 = setTimeout(refreshGSAP, 1500);
 
         const ctx = gsap.context(() => {
-            // Header animation
-            gsap.fromTo(headerEl.children,
-                { y: 30, opacity: 0 },
+            const targets = headerEl.querySelectorAll('.cert-header-reveal');
+            if (targets.length) {
+                gsap.fromTo(
+                    targets,
+                    { opacity: 0, y: 24, scale: 0.96 },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        scale: 1,
+                        duration: 0.8,
+                        stagger: 0.12,
+                        ease: 'power3.out',
+                        scrollTrigger: {
+                            trigger: headerEl,
+                            start: 'top 90%',
+                            toggleActions: 'play none none reverse',
+                        },
+                    }
+                );
+            }
+
+            gsap.fromTo(
+                sliderEl,
+                { opacity: 0, y: 40 },
                 {
-                    y: 0,
                     opacity: 1,
-                    duration: 0.7,
-                    stagger: 0.1,
+                    y: 0,
+                    duration: 1,
                     ease: 'power3.out',
                     scrollTrigger: {
-                        trigger: headerEl,
-                        start: 'top 92%',
-                        toggleActions: 'play none none none',
+                        trigger: sliderEl,
+                        start: 'top 85%',
+                        toggleActions: 'play none none reverse',
                     },
                 }
             );
-
-            // Cards stagger animation
-            gsap.from('.we-card', {
-                y: 40,
-                opacity: 0,
-                duration: 0.6,
-                stagger: 0.12,
-                ease: 'power3.out',
-                scrollTrigger: {
-                    trigger: gridEl,
-                    start: 'top 85%',
-                    toggleActions: 'play none none reverse',
-                },
-            });
         });
 
-        return () => ctx.revert();
+        return () => {
+            window.removeEventListener('resize', refreshGSAP);
+            clearTimeout(timer1);
+            clearTimeout(timer2);
+            ctx.revert();
+        };
     }, []);
 
     // Prevent main page scrolling when modal preview is open & ESC to close
@@ -222,115 +301,223 @@ export default function RelatedExperience() {
         >
             <SectionBackdrop variant="cool" />
 
+            <style>{`
+                .cert-swiper {
+                    padding-bottom: 2.5rem !important;
+                    padding-top: 2rem !important;
+                    overflow: visible !important;
+                }
+                @media (min-width: 640px) {
+                    .cert-swiper {
+                        padding-bottom: 5rem !important;
+                    }
+                }
+                .cert-swiper .swiper-wrapper {
+                    align-items: stretch;
+                }
+                .cert-swiper .swiper-slide {
+                    width: 300px;
+                    height: auto;
+                }
+                @media (min-width: 640px) {
+                    .cert-swiper .swiper-slide {
+                        width: 360px;
+                    }
+                }
+                .cert-card {
+                    position: relative;
+                    min-height: 420px;
+                    background: rgba(255, 255, 255, 0.82);
+                    backdrop-filter: blur(12px);
+                    -webkit-backdrop-filter: blur(12px);
+                    border: 1px solid rgba(220, 38, 38, 0.15);
+                    border-radius: 1.25rem;
+                    overflow: hidden;
+                    cursor: pointer;
+                    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                    box-shadow: 0 16px 42px rgba(83, 64, 40, 0.1);
+                }
+                /* Glossy shine effect on hover */
+                .cert-card::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: -130%;
+                    width: 75%;
+                    height: 100%;
+                    background: linear-gradient(
+                        90deg,
+                        transparent,
+                        rgba(255, 255, 255, 0.25),
+                        transparent
+                    );
+                    transform: skewX(-25deg);
+                    transition: left 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+                    z-index: 10;
+                    pointer-events: none;
+                }
+                .cert-card:hover::before {
+                    left: 160%;
+                }
+                @media (min-width: 640px) {
+                    .cert-card {
+                        min-height: 480px;
+                    }
+                }
+                .cert-card:hover {
+                    border-color: rgba(220, 38, 38, 0.6);
+                    box-shadow: 0 24px 55px rgba(220, 38, 38, 0.25);
+                }
+                .cert-swiper .swiper-slide-active .cert-card {
+                    border-color: rgba(220, 38, 38, 0.7);
+                    box-shadow: 0 12px 35px -10px rgba(220, 38, 38, 0.35);
+                }
+                .cert-swiper .swiper-pagination-bullet {
+                    background: rgba(83, 52, 42, 0.3);
+                    opacity: 1;
+                    transition: all 0.3s ease;
+                }
+                .cert-swiper .swiper-pagination-bullet-active {
+                    background: linear-gradient(135deg, #dc2626, #ef4444);
+                    box-shadow: 0 0 12px rgba(220, 38, 38, 0.5);
+                    width: 24px;
+                    border-radius: 6px;
+                }
+                .cert-swiper .swiper-button-next,
+                .cert-swiper .swiper-button-prev {
+                    display: none !important;
+                }
+            `}</style>
+
             <div className="we-inner">
                 {/* Section Header */}
                 <div ref={headerRef} className="we-header">
-                    <div className="we-label">
+                    <div className="we-label cert-header-reveal">
                         <span className="we-line" />
-                        <span>My Achievements</span>
+                        <span>My Certificate</span>
                         <span className="we-line" />
                     </div>
-                    <h2 className="we-title">
+                    <h2 className="we-title cert-header-reveal">
                         Certificate <span>Collection</span>
                     </h2>
                 </div>
 
-                {/* Certificate Cards Grid */}
-                <div ref={gridRef} className="we-grid">
-                    {experiences.map((exp, idx) => {
-                        const fileId = getGoogleDriveFileId(exp.certificate);
+                {/* 3D Carousel Swiper */}
+                <div ref={sliderContainerRef} className="we-slider-container">
+                    <Swiper
+                        effect={'coverflow'}
+                        grabCursor={true}
+                        centeredSlides={true}
+                        slidesPerView={'auto'}
+                        initialSlide={0}
+                        loop={true}
+                        loopedSlides={experiences.length}
+                        speed={800}
+                        coverflowEffect={{
+                            rotate: 15,
+                            stretch: 10,
+                            depth: 200,
+                            modifier: 1.2,
+                            slideShadows: false,
+                        }}
+                        pagination={{
+                            clickable: true,
+                            dynamicBullets: true,
+                            dynamicMainBullets: 5,
+                        }}
+                        navigation={false}
+                        modules={[EffectCoverflow, Pagination, Navigation]}
+                        className="cert-swiper w-full max-w-7xl mx-auto"
+                    >
+                        {experiences.map((exp, idx) => {
+                            const fileId = getGoogleDriveFileId(exp.certificate);
 
-                        return (
-                            <article
-                                key={exp.id}
-                                className="we-card"
-                                onClick={() => handleOpenModal(exp, fileId ? 'pdf' : 'image')}
-                            >
-                                {/* Card Glow Effect */}
-                                <div className="we-card-glow" />
+                            return (
+                                <SwiperSlide key={exp.id} className="flex h-auto">
+                                    <div
+                                        className="cert-card"
+                                        onClick={() => handleOpenModal(exp, fileId ? 'pdf' : 'image')}
+                                    >
+                                        {/* Thumbnail Container */}
+                                        <div className="cert-card-image">
+                                            <img
+                                                src={exp.image}
+                                                alt={exp.title}
+                                                loading="lazy"
+                                                decoding="async"
+                                                onError={(e) => {
+                                                    if (e.target.src !== PLACEHOLDER_IMAGE && !e.target.src.endsWith(PLACEHOLDER_IMAGE)) {
+                                                        e.target.src = PLACEHOLDER_IMAGE;
+                                                    }
+                                                }}
+                                            />
 
-                                {/* Thumbnail */}
-                                <div className="we-card-image">
-                                    <img
-                                        src={exp.image}
-                                        alt={exp.title}
-                                        loading="lazy"
-                                        decoding="async"
-                                        onError={(e) => {
-                                            if (e.target.src !== PLACEHOLDER_IMAGE && !e.target.src.endsWith(PLACEHOLDER_IMAGE)) {
-                                                e.target.src = PLACEHOLDER_IMAGE;
-                                            }
-                                        }}
-                                    />
+                                            {/* Hover Overlay */}
+                                            <div className="cert-card-overlay">
+                                                <div className="cert-card-overlay-icon">
+                                                    <i className={`fas ${fileId ? 'fa-file-pdf' : 'fa-expand'}`} />
+                                                </div>
+                                                <span className="cert-card-overlay-text">Lihat Preview</span>
+                                            </div>
 
-                                    {/* Year Badge */}
-                                    <div className="we-card-badge we-card-badge--year">
-                                        <i className="far fa-calendar-alt" />
-                                        {exp.year}
-                                    </div>
-
-                                    {/* Category Badge */}
-                                    <div className="we-card-badge we-card-badge--category">
-                                        <i className={`fas ${exp.icon || 'fa-certificate'}`} />
-                                        {exp.category || 'Sertifikat'}
-                                    </div>
-
-                                    {/* Hover Overlay */}
-                                    <div className="we-card-overlay">
-                                        <div className="we-card-overlay-icon">
-                                            <i className={`fas ${fileId ? 'fa-file-pdf' : 'fa-expand'}`} />
+                                            {/* Year Badge */}
+                                            <div className="cert-card-badge cert-card-badge--year">
+                                                <i className="far fa-calendar-alt" />
+                                                {exp.year}
+                                            </div>
                                         </div>
-                                        <span className="we-card-overlay-text">Lihat Preview</span>
+
+                                        {/* Content Container */}
+                                        <div className="cert-card-content">
+                                            <div className="cert-card-header">
+                                                <h3 className="cert-card-title">
+                                                    <span className="cert-title-gradient">{exp.title}</span>
+                                                </h3>
+                                                <p className="cert-card-role">
+                                                    <i className="fas fa-award" />
+                                                    {exp.role}
+                                                </p>
+                                            </div>
+
+                                            <p className="cert-card-description">{exp.description}</p>
+
+                                            <div className="cert-card-tags">
+                                                {exp.tags.map((tag, tagIdx) => (
+                                                    <span key={tagIdx} className="cert-card-tag">{tag}</span>
+                                                ))}
+                                            </div>
+
+                                            <div className="cert-card-actions">
+                                                <button
+                                                    className="cert-btn cert-btn--primary"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleOpenModal(exp, fileId ? 'pdf' : 'image');
+                                                    }}
+                                                >
+                                                    <i className="fas fa-eye" />
+                                                    Lihat Detail
+                                                </button>
+
+                                                {exp.certificate && (
+                                                    <a
+                                                        href={exp.certificate}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="cert-btn cert-btn--secondary"
+                                                        onClick={(e) => e.stopPropagation()}
+                                                        title="Buka di Google Drive"
+                                                    >
+                                                        <i className="fas fa-external-link-alt" />
+                                                    </a>
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-
-                                {/* Content */}
-                                <div className="we-card-content">
-                                    <div className="we-card-header">
-                                        <h3 className="we-card-title">{exp.title}</h3>
-                                        <p className="we-card-role">
-                                            <i className="fas fa-award" />
-                                            {exp.role}
-                                        </p>
-                                    </div>
-
-                                    <p className="we-card-description">{exp.description}</p>
-
-                                    <div className="we-card-tags">
-                                        {exp.tags.map((tag, tagIdx) => (
-                                            <span key={tagIdx} className="we-card-tag">{tag}</span>
-                                        ))}
-                                    </div>
-
-                                    <div className="we-card-actions">
-                                        <button
-                                            className="we-btn we-btn--primary"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleOpenModal(exp, fileId ? 'pdf' : 'image');
-                                            }}
-                                        >
-                                            <i className="fas fa-eye" />
-                                            Lihat Detail
-                                        </button>
-
-                                        {exp.certificate && (
-                                            <a
-                                                href={exp.certificate}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="we-btn we-btn--secondary"
-                                                onClick={(e) => e.stopPropagation()}
-                                                title="Buka di Google Drive"
-                                            >
-                                                <i className="fas fa-external-link-alt" />
-                                            </a>
-                                        )}
-                                    </div>
-                                </div>
-                            </article>
-                        );
-                    })}
+                                </SwiperSlide>
+                            );
+                        })}
+                    </Swiper>
                 </div>
             </div>
 
