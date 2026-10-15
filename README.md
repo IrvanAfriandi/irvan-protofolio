@@ -1,12 +1,12 @@
 <div align="center">
-  <img src="public/img/LandingPage.webp" alt="Irvan Afriandi — Web Developer & Frontend Engineer" width="100%" />
+  <img src="public/img/Mobile.webp" alt="Irvan Afriandi — Web Developer & Frontend Engineer" width="100%" />
 
   <h1>Irvan Afriandi · Portfolio</h1>
 
   <p><strong>Plan, Build, Deploy, Improve.</strong><br />A little corner of the web for my work, experience, and the things I love building.</p>
 
   <p>
-    <a href="https://irvanafriandi.my.id"><img src="https://img.shields.io/badge/Portfolio-Visit%20Website-f04424?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Visit portfolio website" /></a>
+    <a href="https://irvanafnd-portofolio.vercel.app"><img src="https://img.shields.io/badge/Portfolio-Visit%20Website-f04424?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Visit portfolio website" /></a>
     <a href="https://github.com/IrvanAfriandi"><img src="https://img.shields.io/badge/GitHub-IrvanAfriandi-181717?style=for-the-badge&logo=github&logoColor=white" alt="Irvan Afriandi on GitHub" /></a>
     <a href="mailto:irvan.afriandi21@gmail.com"><img src="https://img.shields.io/badge/Email-Say%20hello-ea4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email Irvan Afriandi" /></a>
   </p>
