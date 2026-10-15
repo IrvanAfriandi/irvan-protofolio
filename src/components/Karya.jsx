@@ -1701,12 +1701,8 @@ export default function Karya() {
         </div>
 
         <h2 className="section-title visible">
-          Selected <span>Works</span>
+          My <span>Projects</span>
         </h2>
-
-        <p className="section-subtitle visible">
-          Koleksi proyek inovatif dan solusi digital yang dibangun dengan standar teknologi modern, performa optimal, dan pengalaman visual yang memukau.
-        </p>
       </div>
 
       {/* Main Slider Area */}
