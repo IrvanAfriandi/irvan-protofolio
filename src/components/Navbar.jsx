@@ -1,5 +1,6 @@
 import gsap from 'gsap';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { SLIDE_DATA } from './Karya';
 import { rawExperiences } from './ProfessionalBackgroundSection';
 import { scrollToSection } from '../utils/scrollToSection';
 import './Navbar.css';
@@ -16,29 +17,13 @@ const NAV_LINKS = [
   { label: 'Contact', href: '#contact', smallText: "LET'S CONNECT" },
 ];
 
-const FEATURED_PROJECTS = [
-  {
-    title: 'BYD Cirebon',
-    desc: 'Automotive landing page',
-    tag: 'Web App',
-    image: '/img/byd.webp',
-    href: 'https://bydcirebon.id/',
-  },
-  {
-    title: 'Mariposas Tour',
-    desc: 'Travel agency website',
-    tag: 'Travel',
-    image: '/img/mariposas.webp',
-    href: 'https://mariposasindonesia.com',
-  },
-  {
-    title: 'SILADATA',
-    desc: 'Sistem Layanan Dokumen Akreditasi',
-    tag: 'Management System',
-    image: '/img/siladata.webp',
-    href: 'https://siladata.my.id',
-  },
-];
+const FEATURED_PROJECTS = SLIDE_DATA.map((project) => ({
+  title: project.name,
+  desc: project.description,
+  tag: project.tags?.[0] || project.category,
+  image: project.img,
+  href: project.link,
+}));
 
 const SKILLS = [
   { name: 'React', icon: 'fab fa-react', color: '#61dafb' },
