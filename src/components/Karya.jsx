@@ -6,83 +6,468 @@ gsap.registerPlugin(ScrollTrigger);
 
 export const SLIDE_DATA = [
   {
-    name: "BYD Cirebon",
-    img: "/img/byd.webp",
-    link: "https://bydcirebon.id/",
-    category: "Automotive Dealer",
-    description: "Website dealer dengan katalog kendaraan dan pengalaman showroom digital.",
-    tags: ["React", "Vite", "Tailwind"],
-    detail: {
-      fullDescription: "Website resmi dealer BYD Cirebon yang menampilkan katalog kendaraan listrik secara modern dan interaktif. Dirancang untuk memberikan pengalaman showroom digital yang imersif bagi calon pembeli, lengkap dengan tampilan produk, spesifikasi teknis, serta kemudahan menghubungi tim sales.",
-      highlights: [
-        "Katalog kendaraan interaktif dengan filter dan detail spesifikasi",
-        "Desain responsif & animasi halus untuk pengalaman premium",
-        "Integrasi formulir kontak dan WhatsApp langsung",
-        "Performa optimal dengan lazy loading & WebP image",
+    "name": "Edukasi Gizi Anak SD",
+    "img": "/img/game-edukasi-gizi-makanan.webp",
+    "link": "https://github.com/IrvanAfriandi/game-edukasi-gizi-makanan",
+    "category": "EdTech / Edukasi",
+    "description": "Media belajar gizi interaktif dengan materi dan permainan susun menu untuk siswa sekolah dasar.",
+    "tags": [
+      "Laravel",
+      "PHP",
+      "MySQL"
+    ],
+    "detail": {
+      "fullDescription": "Aplikasi web ini menyajikan materi edukasi gizi dan permainan susun menu untuk siswa sekolah dasar. Pengguna dapat mempelajari delapan topik gizi, memilih empat makanan, lalu melihat skor permainan beserta penjelasan keragaman kategori. Project ini dibangun menggunakan Laravel, PHP, Blade, JavaScript, dan MySQL.",
+      "highlights": [
+        "Delapan materi edukasi dengan manfaat zat gizi, aktivitas, dan contoh makanan.",
+        "Halaman detail materi dilengkapi pengingat keamanan dalam memilih dan menyiapkan makanan.",
+        "Permainan memilih empat makanan berbeda melalui dialog berdasarkan kategori.",
+        "Piring visual menampilkan pilihan makanan sebelum hasil dihitung.",
+        "Skor maksimal 100 berdasarkan poin pilihan dan keragaman kategori.",
+        "Halaman hasil menjelaskan skor, bonus keragaman, dan makanan yang dipilih."
       ],
-      images: ["/img/byd.webp"],
-      gallery: [
-        { src: "/img/byd.webp", caption: "Halaman beranda dealer BYD Cirebon" },
-        { src: "/img/byd.webp", caption: "Katalog kendaraan listrik & spesifikasi EV" },
-        { src: "/img/byd.webp", caption: "Detail teknologi Blade Battery & fitur keamanan" },
-        { src: "/img/byd.webp", caption: "Formulir online pemesanan unit & test drive" },
-        { src: "/img/byd.webp", caption: "Tampilan interface responsif di layar mobile" },
+      "technologies": [
+        "PHP 8.1+",
+        "Laravel 10",
+        "Laravel Sanctum 3",
+        "Laravel Tinker 2",
+        "Blade",
+        "JavaScript",
+        "Axios",
+        "HTML5",
+        "CSS3",
+        "Bootstrap 5",
+        "jQuery",
+        "SweetAlert2",
+        "Owl Carousel",
+        "WOW.js",
+        "Easing",
+        "Waypoints",
+        "CounterUp",
+        "Lightbox",
+        "Font Awesome",
+        "Bootstrap Icons",
+        "Google Fonts (DM Sans, Inter)",
+        "Guzzle 7",
+        "MySQL",
+        "MariaDB",
+        "Composer",
+        "Node.js",
+        "Laravel Vite Plugin",
+        "Vite 5",
+        "npm",
+        "PHPUnit"
       ],
+      "images": [
+        "/img/game-edukasi-gizi-makanan.webp"
+      ],
+      "gallery": [
+        {
+          "src": "/img/projects/game-edukasi-gizi-makanan/01-beranda-hero.webp",
+          "caption": "Hero edukasi gizi untuk siswa sekolah dasar."
+        },
+        {
+          "src": "/img/projects/game-edukasi-gizi-makanan/02-pilihan-program.webp",
+          "caption": "Pintu masuk dari beranda menuju edukasi dan permainan."
+        },
+        {
+          "src": "/img/projects/game-edukasi-gizi-makanan/03-katalog-delapan-topik.webp",
+          "caption": "Katalog delapan topik edukasi gizi."
+        },
+        {
+          "src": "/img/projects/game-edukasi-gizi-makanan/04-katalog-topik-lanjutan.webp",
+          "caption": "Materi lanjutan: serat, zat besi, lemak sehat, dan vitamin D."
+        },
+        {
+          "src": "/img/projects/game-edukasi-gizi-makanan/05-kartu-edukasi-hover.webp",
+          "caption": "Kartu materi edukasi saat diarahkan kursor."
+        },
+        {
+          "src": "/img/projects/game-edukasi-gizi-makanan/06-materi-protein.webp",
+          "caption": "Materi protein, fungsi, dan aktivitas belajar singkat."
+        },
+        {
+          "src": "/img/projects/game-edukasi-gizi-makanan/07-contoh-makanan-protein.webp",
+          "caption": "Galeri contoh makanan sumber protein beserta tipsnya."
+        },
+        {
+          "src": "/img/projects/game-edukasi-gizi-makanan/08-modal-pilih-makanan.webp",
+          "caption": "Dialog pilihan makanan yang dikelompokkan berdasarkan kategori."
+        },
+        {
+          "src": "/img/projects/game-edukasi-gizi-makanan/09-validasi-pilihan.webp",
+          "caption": "Validasi saat menu belum memiliki empat pilihan."
+        },
+        {
+          "src": "/img/projects/game-edukasi-gizi-makanan/10-menu-empat-makanan.webp",
+          "caption": "Piring permainan setelah empat pilihan dari tiga kategori."
+        },
+        {
+          "src": "/img/projects/game-edukasi-gizi-makanan/11-hasil-skor-100.webp",
+          "caption": "Hasil skor 100 dengan bonus keragaman penuh dan rincian poin."
+        },
+        {
+          "src": "/img/projects/game-edukasi-gizi-makanan/12-hasil-skor-70.webp",
+          "caption": "Hasil skor 70 dengan pilihan dari dua kategori gizi."
+        }
+      ]
     }
   },
   {
-    name: "Mariposas Tour",
-    img: "/img/mariposas.webp",
-    link: "https://mariposasindonesia.com",
-    category: "Travel & Tourism",
-    description: "Platform perjalanan untuk menjelajahi destinasi Indonesia dengan lebih mudah.",
-    tags: ["React", "GSAP", "Vercel"],
-    detail: {
-      fullDescription: "Mariposas Tour adalah platform digital untuk agen perjalanan wisata Indonesia. Menampilkan paket tur, destinasi populer, dan galeri foto wisata dengan animasi GSAP yang memukau. Dibangun di atas React + Vite dan di-deploy di Vercel untuk kecepatan loading yang optimal.",
-      highlights: [
-        "Halaman destinasi dengan animasi scroll parallax berbasis GSAP",
-        "Galeri foto perjalanan yang imersif dan mobile-friendly",
-        "Tampilan paket tur lengkap dengan harga dan jadwal",
-        "Deploy otomatis via Vercel dengan performa CDN global",
+    "name": "Aplikasi Data Karyawan",
+    "img": "/img/sim-karyawan-hanjuan-engineering.webp",
+    "link": "https://github.com/IrvanAfriandi/SIM-Karyawan-hanjuan-engineering",
+    "category": "Kepegawaian",
+    "description": "Aplikasi pengelolaan karyawan, absensi, dan pengajuan cuti dengan akses admin dan karyawan.",
+    "tags": [
+      "Laravel",
+      "PHP",
+      "MySQL"
+    ],
+    "detail": {
+      "fullDescription": "Aplikasi Data Karyawan membantu admin dan karyawan mengelola administrasi SDM, absensi, serta pengajuan cuti. Aplikasi dibangun dengan Laravel 10 dan antarmuka Argon Dashboard; akses fitur dibedakan menjadi role admin dan karyawan.",
+      "highlights": [
+        "Dashboard ringkas untuk admin dan karyawan.",
+        "Pengelolaan akun dengan role admin dan karyawan.",
+        "Pengelolaan data karyawan, divisi, jabatan, dan jenis cuti.",
+        "Pencatatan absensi harian karyawan.",
+        "Pengajuan cuti serta alur persetujuan admin.",
+        "Unggah foto pada data karyawan."
       ],
-      images: ["/img/mariposas.webp"],
-      gallery: [
-        { src: "/img/mariposas.webp", caption: "Landing page modern Mariposas Tour" },
-        { src: "/img/mariposas.webp", caption: "Koleksi destinasi wisata unggulan nusantara" },
-        { src: "/img/mariposas.webp", caption: "Detail itinerary paket perjalanan lengkap" },
-        { src: "/img/mariposas.webp", caption: "Animasi smooth scroll parallax berbasis GSAP" },
-        { src: "/img/mariposas.webp", caption: "Galeri visual dokumentasi petualangan alam" },
-        { src: "/img/mariposas.webp", caption: "Formulir reservasi tur cepat & terintegrasi" },
-        { src: "/img/mariposas.webp", caption: "Tampilan footer & informasi kontak pemesanan" },
+      "technologies": [
+        "Laravel 10",
+        "PHP 8.1+",
+        "MySQL (default konfigurasi)",
+        "SQLite (basis data demo screenshot)",
+        "Argon Dashboard 2.0.4",
+        "Bootstrap 5",
+        "Chart.js",
+        "SweetAlert2",
+        "Laravel Sanctum",
+        "Vite"
       ],
+      "images": [
+        "/img/sim-karyawan-hanjuan-engineering.webp"
+      ],
+      "gallery": [
+        {
+          "src": "/img/projects/sim-karyawan-hanjuan-engineering/01-dashboard-admin.webp",
+          "caption": "Dashboard admin dengan ringkasan dan aktivitas karyawan."
+        },
+        {
+          "src": "/img/projects/sim-karyawan-hanjuan-engineering/02-manajemen-pengguna.webp",
+          "caption": "Daftar akun pengguna beserta role akses."
+        },
+        {
+          "src": "/img/projects/sim-karyawan-hanjuan-engineering/03-form-edit-foto-karyawan-bagian-1.webp",
+          "caption": "Form edit karyawan terisi dengan foto dummy terpilih (bagian 1 dari 2)."
+        },
+        {
+          "src": "/img/projects/sim-karyawan-hanjuan-engineering/04-form-edit-foto-karyawan-bagian-2.webp",
+          "caption": "Form edit karyawan terisi dengan foto dummy terpilih (bagian 2 dari 2)."
+        },
+        {
+          "src": "/img/projects/sim-karyawan-hanjuan-engineering/05-foto-karyawan-berhasil-diunggah-bagian-1.webp",
+          "caption": "Foto dummy berhasil disimpan pada data karyawan (bagian 1 dari 2)."
+        },
+        {
+          "src": "/img/projects/sim-karyawan-hanjuan-engineering/06-foto-karyawan-berhasil-diunggah-bagian-2.webp",
+          "caption": "Foto dummy berhasil disimpan pada data karyawan (bagian 2 dari 2)."
+        },
+        {
+          "src": "/img/projects/sim-karyawan-hanjuan-engineering/07-konfirmasi-persetujuan-cuti-bagian-1.webp",
+          "caption": "Konfirmasi admin sebelum menyetujui pengajuan cuti (bagian 1 dari 2)."
+        },
+        {
+          "src": "/img/projects/sim-karyawan-hanjuan-engineering/08-konfirmasi-persetujuan-cuti-bagian-2.webp",
+          "caption": "Konfirmasi admin sebelum menyetujui pengajuan cuti (bagian 2 dari 2)."
+        },
+        {
+          "src": "/img/projects/sim-karyawan-hanjuan-engineering/09-dashboard-karyawan.webp",
+          "caption": "Dashboard karyawan dengan ringkasan data pribadi."
+        },
+        {
+          "src": "/img/projects/sim-karyawan-hanjuan-engineering/10-absensi-harian-berhasil.webp",
+          "caption": "Status absensi harian setelah karyawan mencatat kehadiran."
+        },
+        {
+          "src": "/img/projects/sim-karyawan-hanjuan-engineering/11-form-pengajuan-cuti.webp",
+          "caption": "Form pengajuan cuti karyawan terisi dengan data contoh."
+        },
+        {
+          "src": "/img/projects/sim-karyawan-hanjuan-engineering/12-login.webp",
+          "caption": "Form login aplikasi untuk autentikasi pengguna."
+        }
+      ]
     }
   },
   {
-    name: "SILADATA",
-    img: "/img/siladata.webp",
-    link: "https://siladata.my.id",
-    category: "Data Management",
-    description: "Sistem pengelolaan dokumen akreditasi yang terpusat dan terstruktur.",
-    tags: ["Web App", "PHP", "MySQL"],
-    detail: {
-      fullDescription: "SILADATA (Sistem Layanan Dokumen Akreditasi) adalah aplikasi web fullstack untuk manajemen dokumen akreditasi institusi pendidikan. Sistem ini telah mendapatkan pengakuan resmi berupa Hak Kekayaan Intelektual (HKI) dari Kementerian Hukum & HAM RI, membuktikan inovasi dan orisinalitasnya.",
-      highlights: [
-        "Manajemen dokumen akreditasi terpusat & terstruktur",
-        "Sistem autentikasi role-based (admin, operator, viewer)",
-        "Fitur upload, pencarian, dan export dokumen",
-        "Terdaftar resmi di HKI Kemenkumham RI (2026)",
+    "name": "HyperCare",
+    "img": "/img/sistem-diagnosis-gangguan-kehamilan.webp",
+    "link": "https://github.com/IrvanAfriandi/sistem-pakar-diagnosis-penyakit-hipertensi-pada-ibu-hamil",
+    "category": "Sistem Pakar Kesehatan",
+    "description": "Sistem pakar untuk membantu diagnosis hipertensi pada ibu hamil.",
+    "tags": [
+      "Laravel",
+      "PHP",
+      "Certainty Factor"
+    ],
+    "detail": {
+      "fullDescription": "HyperCare adalah aplikasi sistem pakar untuk membantu proses diagnosis penyakit terkait hipertensi pada ibu hamil. Aplikasi ini menyediakan alur konsultasi publik serta panel admin dan petugas untuk mengelola data pasien, penyakit, gejala, dan basis pengetahuan. Project dibangun dengan Laravel 10, PHP, dan database relasional.",
+      "highlights": [
+        "Dashboard statistik konsultasi dan data kesehatan",
+        "Manajemen pasien, pengguna, penyakit, dan gejala",
+        "Basis pengetahuan dengan nilai Certainty Factor",
+        "Alur konsultasi publik berbasis tingkat gejala",
+        "Hasil diagnosis dengan tingkat keyakinan",
+        "Riwayat konsultasi dan ekspor laporan"
       ],
-      images: ["/img/siladata.webp"],
-      gallery: [
-        { src: "/img/siladata.webp", caption: "Dashboard utama pengelolaan dokumen akreditasi" },
-        { src: "/img/siladata.webp", caption: "Daftar arsip dokumen terstruktur & filter status" },
-        { src: "/img/siladata.webp", caption: "Panel autentikasi & manajemen hak akses pengguna" },
-        { src: "/img/siladata.webp", caption: "Form upload & kategorisasi standar akreditasi" },
-        { src: "/img/siladata.webp", caption: "Pencarian cerdas dan ekspor laporan berkas" },
-        { src: "/img/siladata.webp", caption: "Sertifikat Hak Cipta (HKI) Kemenkumham RI" },
+      "technologies": [
+        "Laravel 10",
+        "PHP 8.1+",
+        "MySQL",
+        "SQLite untuk database screenshot sementara",
+        "Blade Templates",
+        "Bootstrap 5",
+        "Font Awesome",
+        "SweetAlert2",
+        "Vite",
+        "Laravel Sanctum"
       ],
+      "images": [
+        "/img/sistem-diagnosis-gangguan-kehamilan.webp"
+      ],
+      "gallery": [
+        {
+          "src": "/img/projects/sistem-diagnosis-gangguan-kehamilan/01-dashboard-admin.webp",
+          "caption": "Dashboard admin menampilkan statistik pasien, konsultasi, penyakit, dan gejala."
+        },
+        {
+          "src": "/img/projects/sistem-diagnosis-gangguan-kehamilan/02-data-pasien-admin.webp",
+          "caption": "Daftar pasien dummy dengan pencarian nama aktif."
+        },
+        {
+          "src": "/img/projects/sistem-diagnosis-gangguan-kehamilan/03-form-pasien-admin.webp",
+          "caption": "Form tambah pasien terisi data contoh di dalam modal."
+        },
+        {
+          "src": "/img/projects/sistem-diagnosis-gangguan-kehamilan/04-manajemen-pengguna-admin.webp",
+          "caption": "Form manajemen pengguna untuk menetapkan role admin atau petugas."
+        },
+        {
+          "src": "/img/projects/sistem-diagnosis-gangguan-kehamilan/05-data-penyakit-admin.webp",
+          "caption": "Daftar penyakit dan form tambah kondisi kesehatan contoh."
+        },
+        {
+          "src": "/img/projects/sistem-diagnosis-gangguan-kehamilan/06-data-gejala-admin.webp",
+          "caption": "Daftar gejala dengan pencarian aktif."
+        },
+        {
+          "src": "/img/projects/sistem-diagnosis-gangguan-kehamilan/07-basis-pengetahuan-admin.webp",
+          "caption": "Basis pengetahuan Certainty Factor dengan filter dan form aturan."
+        },
+        {
+          "src": "/img/projects/sistem-diagnosis-gangguan-kehamilan/08-riwayat-konsultasi-admin.webp",
+          "caption": "Riwayat konsultasi dengan modal detail dan opsi laporan."
+        },
+        {
+          "src": "/img/projects/sistem-diagnosis-gangguan-kehamilan/09-dashboard-petugas.webp",
+          "caption": "Dashboard yang dapat diakses oleh role petugas."
+        },
+        {
+          "src": "/img/projects/sistem-diagnosis-gangguan-kehamilan/10-login.webp",
+          "caption": "Halaman login untuk autentikasi pengguna aplikasi."
+        },
+        {
+          "src": "/img/projects/sistem-diagnosis-gangguan-kehamilan/11-form-diagnosis-publik.webp",
+          "caption": "Form diagnosis dengan gejala dan nilai keyakinan terisi."
+        },
+        {
+          "src": "/img/projects/sistem-diagnosis-gangguan-kehamilan/12-hasil-diagnosis-publik.webp",
+          "caption": "Hasil diagnosis menampilkan penyakit utama dan tingkat kepercayaan."
+        }
+      ]
     }
   },
+  {
+    "name": "Sistem Informasi Logistik KPU Kabupaten Cirebon",
+    "img": "/img/sistem-logistik-kpu-kabupaten-cirebon.webp",
+    "link": "https://github.com/IrvanAfriandi/sistem-logistik-kpu-kabupaten-cirebon",
+    "category": "Logistik Pemilu",
+    "description": "Pengelolaan logistik pemilu, dari surat suara dan perlengkapan hingga packing dan distribusi.",
+    "tags": [
+      "Laravel",
+      "MySQL",
+      "Bootstrap 5"
+    ],
+    "detail": {
+      "fullDescription": "Aplikasi ini mendukung pengelolaan logistik pemilu untuk operator Admin dan PPK, termasuk pencatatan surat suara, perlengkapan, serta proses sortir, packing, dan distribusi. Proyek dibangun dengan Laravel 10 dan Blade, dengan antarmuka berbasis Mazer dan Bootstrap.",
+      "highlights": [
+        "Dashboard administrasi sebagai pintu masuk modul logistik.",
+        "Pencatatan box surat suara, jenis, dan statusnya.",
+        "Manajemen akun PPK dan pengisian profil dengan foto.",
+        "Halaman kerja PPK untuk memantau progres sortir-lipat."
+      ],
+      "technologies": [
+        "Laravel 10",
+        "PHP 8.1+",
+        "MySQL (default konfigurasi)",
+        "SQLite (database sementara screenshot)",
+        "Blade",
+        "Bootstrap 5 (antarmuka Mazer)",
+        "JavaScript",
+        "Vite",
+        "Laravel Sanctum",
+        "barryvdh/laravel-dompdf",
+        "Guzzle"
+      ],
+      "images": [
+        "/img/sistem-logistik-kpu-kabupaten-cirebon.webp"
+      ],
+      "gallery": [
+        {
+          "src": "/img/projects/sistem-logistik-kpu-kabupaten-cirebon/01-dashboard.webp",
+          "caption": "Dashboard utama Admin untuk navigasi pengelolaan logistik."
+        },
+        {
+          "src": "/img/projects/sistem-logistik-kpu-kabupaten-cirebon/02-dashboard-lanjutan.webp",
+          "caption": "Dashboard utama Admin untuk navigasi pengelolaan logistik. (bagian lanjutan)."
+        },
+        {
+          "src": "/img/projects/sistem-logistik-kpu-kabupaten-cirebon/03-login.webp",
+          "caption": "Form masuk untuk Admin dan PPK."
+        },
+        {
+          "src": "/img/projects/sistem-logistik-kpu-kabupaten-cirebon/04-daftar-box-surat-suara.webp",
+          "caption": "Daftar box surat suara dengan data uji dan pencarian aktif."
+        },
+        {
+          "src": "/img/projects/sistem-logistik-kpu-kabupaten-cirebon/05-daftar-box-surat-suara-lanjutan.webp",
+          "caption": "Daftar box surat suara dengan data uji dan pencarian aktif. (bagian lanjutan)."
+        },
+        {
+          "src": "/img/projects/sistem-logistik-kpu-kabupaten-cirebon/06-pemantauan-sorlip-ppk.webp",
+          "caption": "Halaman PPK untuk memantau progres sortir-lipat petugas."
+        },
+        {
+          "src": "/img/projects/sistem-logistik-kpu-kabupaten-cirebon/07-pemantauan-sorlip-ppk-lanjutan.webp",
+          "caption": "Halaman PPK untuk memantau progres sortir-lipat petugas. (bagian lanjutan)."
+        },
+        {
+          "src": "/img/projects/sistem-logistik-kpu-kabupaten-cirebon/08-pilih-foto-profil.webp",
+          "caption": "Form akun PPK berisi data contoh dan foto dummy yang telah dipilih."
+        },
+        {
+          "src": "/img/projects/sistem-logistik-kpu-kabupaten-cirebon/09-pilih-foto-profil-lanjutan.webp",
+          "caption": "Form akun PPK berisi data contoh dan foto dummy yang telah dipilih. (bagian lanjutan)."
+        },
+        {
+          "src": "/img/projects/sistem-logistik-kpu-kabupaten-cirebon/10-unggah-foto-berhasil.webp",
+          "caption": "Konfirmasi setelah foto dummy akun PPK berhasil diunggah."
+        },
+        {
+          "src": "/img/projects/sistem-logistik-kpu-kabupaten-cirebon/11-unggah-foto-berhasil-lanjutan.webp",
+          "caption": "Konfirmasi setelah foto dummy akun PPK berhasil diunggah. (bagian lanjutan)."
+        }
+      ]
+    }
+  },
+  {
+    "name": "Sistem Penilaian Isian Singkat Otomatis",
+    "img": "/img/sistem-penilaian-otomatis.webp",
+    "link": "https://github.com/IrvanAfriandi/sistem-penilaian-otomatis-isian-singkat",
+    "category": "Pendidikan",
+    "description": "Kelola ujian dan nilai jawaban isian singkat dengan bantuan AI.",
+    "tags": [
+      "React",
+      "Flask",
+      "AI"
+    ],
+    "detail": {
+      "fullDescription": "Aplikasi untuk mengelola kelas, mata pelajaran, siswa, ujian, peserta, dan penilaian jawaban isian singkat. Frontend dibangun dengan React dan backend Flask yang terhubung ke database MySQL serta model computer vision dan NLP.",
+      "highlights": [
+        "Dashboard statistik kelas, siswa, mata pelajaran, dan ujian",
+        "Pengelolaan kelas, mata pelajaran, dan data siswa dengan pencarian",
+        "Pembuatan ujian, pengelolaan soal, peserta, dan progres pengerjaan",
+        "Upload jawaban dan ekstraksi teks tulisan tangan berbasis model AI",
+        "Review jawaban, penilaian otomatis, dan hasil nilai per soal",
+        "Ekspor lembar soal ke PDF"
+      ],
+      "technologies": [
+        "Python",
+        "Flask 3.1",
+        "Flask-SQLAlchemy",
+        "Flask-JWT-Extended",
+        "MySQL",
+        "PyMySQL",
+        "React 18",
+        "TypeScript",
+        "Vite",
+        "Tailwind CSS",
+        "Radix UI",
+        "Recharts",
+        "PyTorch",
+        "Ultralytics YOLOv8",
+        "CRNN",
+        "Transformers",
+        "Sentence Transformers",
+        "jsPDF"
+      ],
+      "images": [
+        "/img/sistem-penilaian-otomatis.webp"
+      ],
+      "gallery": [
+        {
+          "src": "/img/projects/sistem-penilaian-otomatis/01-dashboard.webp",
+          "caption": "Dashboard ringkas dengan statistik kelas, siswa, mata pelajaran, dan ujian."
+        },
+        {
+          "src": "/img/projects/sistem-penilaian-otomatis/02-daftar-kelas.webp",
+          "caption": "Daftar kelas dengan jumlah siswa dan aksi pengelolaan."
+        },
+        {
+          "src": "/img/projects/sistem-penilaian-otomatis/03-pencarian-mata-pelajaran.webp",
+          "caption": "Daftar mata pelajaran dengan pencarian aktif."
+        },
+        {
+          "src": "/img/projects/sistem-penilaian-otomatis/04-daftar-siswa.webp",
+          "caption": "Daftar siswa dummy dengan pencarian aktif."
+        },
+        {
+          "src": "/img/projects/sistem-penilaian-otomatis/05-daftar-ujian.webp",
+          "caption": "Daftar ujian dengan ringkasan peserta dan progres."
+        },
+        {
+          "src": "/img/projects/sistem-penilaian-otomatis/06-detail-ujian.webp",
+          "caption": "Detail ujian, progres pengumpulan, dan daftar peserta."
+        },
+        {
+          "src": "/img/projects/sistem-penilaian-otomatis/07-edit-soal.webp",
+          "caption": "Form pengelolaan soal ujian dengan data contoh."
+        },
+        {
+          "src": "/img/projects/sistem-penilaian-otomatis/08-detail-jawaban-peserta.webp",
+          "caption": "Detail jawaban dan penilaian peserta ujian."
+        },
+        {
+          "src": "/img/projects/sistem-penilaian-otomatis/09-upload-jawaban.webp",
+          "caption": "Form upload jawaban dengan file contoh dummy yang sudah dipilih."
+        },
+        {
+          "src": "/img/projects/sistem-penilaian-otomatis/10-penilaian-otomatis.webp",
+          "caption": "Alur review jawaban dan penilaian otomatis berbasis AI."
+        },
+        {
+          "src": "/img/projects/sistem-penilaian-otomatis/11-hasil-penilaian.webp",
+          "caption": "Hasil penilaian per soal dengan nilai dummy."
+        },
+        {
+          "src": "/img/projects/sistem-penilaian-otomatis/12-login.webp",
+          "caption": "Halaman login aplikasi."
+        }
+      ]
+    }
+  }
 ];
 
 const TOTAL = SLIDE_DATA.length;
@@ -91,6 +476,8 @@ let isAnimating = false;
 let autoSlideInterval = null;
 let savedScrollY = 0;
 
+const isGithub = (link) => typeof link === 'string' && link.includes('github.com');
+
 export default function Karya() {
   const sectionRef = useRef(null);
   const sliderRef = useRef(null);
@@ -98,6 +485,7 @@ export default function Karya() {
   const nextArrowRef = useRef(null);
   const modalRef = useRef(null);
   const previewRef = useRef(null);
+  const autoSlideResumeTimer = useRef(null);
 
   const [modalProject, setModalProject] = useState(null);
   const [galleryIdx, setGalleryIdx] = useState(0);
@@ -213,8 +601,8 @@ export default function Karya() {
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
               <span>Lihat Detail</span>
             </button>
-            <a class="karya-card-link-badge" href="${content.link}" target="_blank" rel="noopener noreferrer" aria-label="Kunjungi ${content.name}">
-              <span>Visit</span>
+            <a class="karya-card-link-badge" href="${content.link}" target="_blank" rel="noopener noreferrer" aria-label="${isGithub(content.link) ? `Buka repository GitHub ${content.name}` : `Kunjungi ${content.name}`}">
+              <span>${isGithub(content.link) ? 'GitHub' : 'Visit'}</span>
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
             </a>
           </div>
@@ -389,7 +777,9 @@ export default function Karya() {
         const linkElem = activeSlide.querySelector('.karya-card-link-badge');
         if (linkElem) {
           linkElem.href = newContent.link || '#';
-          linkElem.setAttribute('aria-label', `Kunjungi ${newContent.name}`);
+          linkElem.setAttribute('aria-label', isGithub(newContent.link) ? `Buka repository GitHub ${newContent.name}` : `Kunjungi ${newContent.name}`);
+          const linkLabel = linkElem.querySelector('span');
+          if (linkLabel) linkLabel.innerText = isGithub(newContent.link) ? 'GitHub' : 'Visit';
         }
         activeSlide.dataset.projectName = newContent.name;
       })
@@ -413,6 +803,11 @@ export default function Karya() {
   const resetAutoSlide = () => {
     clearInterval(autoSlideInterval);
     startAutoSlide();
+  };
+
+  const scheduleAutoSlideResume = () => {
+    if (autoSlideResumeTimer.current) clearTimeout(autoSlideResumeTimer.current);
+    autoSlideResumeTimer.current = setTimeout(startAutoSlide, 1000);
   };
 
   const redirectActiveSlide = () => {
@@ -1825,7 +2220,7 @@ export default function Karya() {
                       onClick={() => setGalleryIdx(idx)}
                       aria-label={`Lihat gambar ${idx + 1}`}
                     >
-                      <img src={item.src} alt={item.caption} />
+                      <img src={item.src} alt={item.caption} loading="lazy" decoding="async" />
                     </button>
                   ))}
                 </div>
@@ -1855,11 +2250,11 @@ export default function Karya() {
               )}
 
               {/* Tech Stack Tags */}
-              {modalProject.tags && modalProject.tags.length > 0 && (
+              {(modalProject.detail?.technologies?.length ? modalProject.detail.technologies : modalProject.tags)?.length > 0 && (
                 <div className="karya-modal-tags-wrap">
                   <h4 className="karya-modal-subtitle">Teknologi yang Digunakan</h4>
                   <div className="karya-modal-tags">
-                    {modalProject.tags.map((tag) => (
+                    {(modalProject.detail?.technologies?.length ? modalProject.detail.technologies : modalProject.tags).map((tag) => (
                       <span key={tag} className="karya-modal-tag">{tag}</span>
                     ))}
                   </div>
@@ -1883,7 +2278,7 @@ export default function Karya() {
                   rel="noopener noreferrer"
                   className="karya-modal-btn-visit"
                 >
-                  <span>Kunjungi Situs</span>
+                  <span>{isGithub(modalProject.link) ? 'Lihat di GitHub' : 'Kunjungi Situs'}</span>
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                 </a>
               )}
