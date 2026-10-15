@@ -5,8 +5,8 @@
 Developer & Designer: Irvan Afriandi
 Twitter: @callme_ikoo
 Instagram: @callme_ikoo
-GitHub: github.com/rikorizky
-LinkedIn: linkedin.com/in/riko-rizky-baswara-921262338
+GitHub: github.com/Irvanafriandi
+LinkedIn: linkedin.com/in/Irvan-rizky-Afriandi-921262338
 Location: Cirebon, Jawa Barat, Indonesia
 
 /* THANKS */
@@ -22,4 +22,4 @@ Framework: React.js, Vite
 Standards: HTML5, CSS3, JavaScript ES2024
 Components: GSAP, React Router, FontAwesome
 Hosting: Vercel
-Domain: rikorizky.my.id
+Domain: irvanafriandi.my.id

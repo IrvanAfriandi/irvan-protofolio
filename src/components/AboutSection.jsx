@@ -223,14 +223,14 @@ export default function AboutSection() {
                 <li><i className="fas fa-graduation-cap" /> <span itemProp="alumniOf">Bachelor's in Informatics Engineering</span></li>
               </ul>
               <div className="about-profile-socials">
-                <a href="https://github.com/rikorizky" target="_blank" rel="noopener noreferrer me" aria-label="GitHub Irvan Afriandi" itemProp="sameAs">
+                <a href="https://github.com/Irvanafriandi" target="_blank" rel="noopener noreferrer me" aria-label="GitHub Irvan Afriandi" itemProp="sameAs">
                   <i className="fab fa-github" />
                 </a>
-                <a href="mailto:rikorizky20@gmail.com" aria-label="Email Irvan Afriandi" itemProp="email">
+                <a href="mailto:irvan.afriandi21@gmail.com" aria-label="Email Irvan Afriandi" itemProp="email">
                   <i className="fas fa-envelope" />
                 </a>
                 <a
-                  href="https://id.linkedin.com/in/riko-rizky-baswara-921262338"
+                  href="https://id.linkedin.com/in/Irvan-rizky-Afriandi-921262338"
                   target="_blank"
                   rel="noopener noreferrer me"
                   aria-label="LinkedIn Irvan Afriandi"

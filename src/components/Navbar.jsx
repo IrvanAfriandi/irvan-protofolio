@@ -62,10 +62,10 @@ const EXPERIENCE = rawExperiences.slice(0, 3).map((item) => ({
 }));
 
 const SOCIAL_LINKS = [
-  { label: 'GitHub', href: 'https://github.com/rikorizky', icon: 'fab fa-github', color: '#ffffff' },
+  { label: 'GitHub', href: 'https://github.com/Irvanafriandi', icon: 'fab fa-github', color: '#ffffff' },
   { label: 'Instagram', href: 'https://instagram.com/sir_ikoo', icon: 'fab fa-instagram', color: '#e1306c' },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/riko-rizky-baswara-921262338?utm_source=share_via&utm_content=profile&utm_medium=member_android', icon: 'fab fa-linkedin-in', color: '#0a66c2' },
-  { label: 'Email', href: 'mailto:rikorizky20@gmail.com', icon: 'fas fa-envelope', color: '#dc2626' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/Irvan-rizky-Afriandi-921262338', icon: 'fab fa-linkedin-in', color: '#0a66c2' },
+  { label: 'Email', href: 'mailto:irvan.afriandi21@gmail.com', icon: 'fas fa-envelope', color: '#dc2626' },
 ];
 
 function showNav(shell) {
@@ -488,7 +488,7 @@ export default function Navbar() {
                   </li>
                   <li>
                     <i className="fas fa-envelope" />
-                    <a href="mailto:rikorizky20@gmail.com">rikorizky20@gmail.com</a>
+                    <a href="mailto:irvan.afriandi21@gmail.com">irvan.afriandi21@gmail.com</a>
                   </li>
                 </ul>
               </div>

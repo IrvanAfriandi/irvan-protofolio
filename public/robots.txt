@@ -1,4 +1,4 @@
-# robots.txt for https://rikorizky.my.id/
+# robots.txt for https://irvanafriandi.my.id/
 # Irvan Afriandi - Web Developer & Frontend Engineer Portfolio
 
 # Allow all crawlers
@@ -22,4 +22,4 @@ User-agent: DuckDuckBot
 Allow: /
 
 # Sitemap location
-Sitemap: https://rikorizky.my.id/sitemap.xml
+Sitemap: https://irvanafriandi.my.id/sitemap.xml

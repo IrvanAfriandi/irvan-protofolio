@@ -209,7 +209,7 @@ const NotFound = () => {
                 <i className="fa-solid fa-user-astronaut"></i>
               </div>
               <div className="nf-card-info">
-                <h4>Tentang Riko</h4>
+                <h4>Tentang Irvan</h4>
                 <p>Pelajari profil & background</p>
               </div>
               <i className="fa-solid fa-arrow-right nf-arrow"></i>
