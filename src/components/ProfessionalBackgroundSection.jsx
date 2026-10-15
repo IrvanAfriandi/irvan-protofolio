@@ -459,12 +459,6 @@ export default function RelatedExperience() {
                                                 </div>
                                                 <span className="cert-card-overlay-text">Lihat Preview</span>
                                             </div>
-
-                                            {/* Year Badge */}
-                                            <div className="cert-card-badge cert-card-badge--year">
-                                                <i className="far fa-calendar-alt" />
-                                                {exp.year}
-                                            </div>
                                         </div>
 
                                         {/* Content Container */}
