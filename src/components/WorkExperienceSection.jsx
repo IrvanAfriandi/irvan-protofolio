@@ -10,14 +10,17 @@ const WORK_EXPERIENCE = [
     period: 'Nov 2025 - Mei 2026',
     role: 'Internship',
     title: 'PT Bridgestone Tire Indonesia',
+    position: 'Kaizen & Standard Promotion',
     location: 'Karawang, West Java',
     icon: 'fa-industry',
     color: '#dc2626',
     image: '/img/bridgestone.webp',
     achievements: [
-      'Mengembangkan sistem monitoring digital 1D1OP menggunakan Microsoft Power Platform',
-      'Mencakup 9 bagian produksi dengan eliminasi penggunaan kertas secara total',
-      'Mengurangi waktu processing data dari 1 minggu menjadi real-time',
+      'Led the development of the 1D1OP digital monitoring system using Microsoft Power Platform across 9 production sections.',
+      'Created digital checksheets with Microsoft Forms to ensure operational standards compliance, eliminating paper usage by 100%.',
+      'Built automated workflows with Power Automate that reduced data processing time from one week to real-time.',
+      'Developed 5 interactive Power BI dashboards for real-time operational monitoring and decision-making.',
+      'Deployed the system successfully and completed handover with maintenance documentation.',
     ],
     tags: ['Power Platform', 'Power Automate', 'Power BI'],
     stats: [
@@ -32,14 +35,19 @@ const WORK_EXPERIENCE = [
     period: 'Okt 2024 - Feb 2025',
     role: 'Apprentice',
     title: 'KPU Kabupaten Cirebon',
+    position: 'Human Resources, Voter Education & Public Participation',
     location: 'Cirebon, West Java',
     icon: 'fa-landmark',
     color: '#2563eb',
     image: '/img/kpu.webp',
     achievements: [
-      'Mengelola database lebih dari 26.600 anggota panitia pemilu',
-      'Mendukung administrasi SDM, edukasi pemilih, dan logistik',
-      'Monitoring langsung selama pelaksanaan Pemilukada Cirebon',
+      'Managed a database of 26,600+ election committee members (PPK, PPS, KPPS) ensuring data accuracy and completeness.',
+      'Developed a violation reporting system using Google Forms for real-time reporting and simplified data collection.',
+      'Assisted in managing HR documents, operational archives, and routine reports.',
+      'Supported voter awareness outreach activities in Cirebon Regency.',
+      'Served as supervisor and documentation officer during the 15-day ballot-folding process.',
+      'Supported logistics distribution and delivery of ballots to polling stations over a 6-day period.',
+      'Provided on-site monitoring throughout the election to ensure smooth operations.',
     ],
     tags: ['Data Management', 'Google Forms', 'Admin Support'],
     stats: [
@@ -116,9 +124,17 @@ const ExperienceCard = ({ experience, index }) => {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setTimeout(() => {
-              card.classList.add('visible');
-            }, index * 150);
+            // Remove visible class first to reset animation
+            card.classList.remove('visible');
+            // Small delay to ensure DOM updates
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                card.classList.add('visible');
+              });
+            });
+          } else {
+            // Remove visible class when out of view
+            card.classList.remove('visible');
           }
         });
       },
@@ -129,11 +145,6 @@ const ExperienceCard = ({ experience, index }) => {
     return () => observer.disconnect();
   }, [index]);
 
-  const getShortName = (name) => {
-    if (name.includes('Bridgestone')) return 'Bridgestone';
-    if (name.includes('KPU')) return 'KPU';
-    return name.split(' ').slice(0, 2).join(' ');
-  };
 
   return (
     <article
@@ -158,61 +169,32 @@ const ExperienceCard = ({ experience, index }) => {
           <span className="particle"></span>
           <span className="particle"></span>
         </div>
-        <div className="exp-card-logo">
-          <div className="exp-card-logo-icon">
-            <i className={`fas ${experience.icon}`} />
-          </div>
-          <span className="exp-card-logo-text">{getShortName(experience.title)}</span>
-        </div>
         <div className="exp-card-year">
-          {experience.yearStart} <span>-</span> {experience.yearEnd}
+          {experience.period}
         </div>
       </div>
 
       {/* Content Side */}
       <div className="exp-card-content">
-        <div className="exp-card-header">
-          <span className="exp-period-tag">
-            <i className="fas fa-calendar-alt" />
-            {experience.period}
-          </span>
-          <span className="exp-role-badge">{experience.role}</span>
-        </div>
-
         <div className="exp-company-info">
-          <h3 className="exp-company-title">{experience.title}</h3>
+          <h3 className="exp-company-title">
+            {experience.title}
+            <span className="exp-role-badge">{experience.role}</span>
+          </h3>
+          <p className="exp-position">{experience.position}</p>
           <p className="exp-company-location">
             <i className="fas fa-map-marker-alt" />
             {experience.location}
           </p>
         </div>
 
-        <div className="exp-stats-grid">
-          {experience.stats.map((stat, i) => (
-            <div key={i} className="exp-stat-card">
-              <AnimatedNumber value={stat.value} />
-              <span className="exp-stat-label">{stat.label}</span>
-            </div>
-          ))}
-        </div>
 
-        <div className="exp-divider">
-          <span className="exp-divider-line" />
-          <i className="fas fa-star exp-divider-icon" />
-          <span className="exp-divider-line" />
-        </div>
 
         <div className="exp-achievements">
-          <h4 className="exp-section-title">
-            <i className="fas fa-bullseye" />
-            Pencapaian Utama
-          </h4>
           <ul className="exp-achievements-list">
             {experience.achievements.map((achievement, i) => (
               <li key={i} className="exp-achievement-item">
-                <span className="exp-achievement-icon">
-                  <i className="fas fa-check" />
-                </span>
+                <span className="exp-achievement-icon" />
                 <span>{achievement}</span>
               </li>
             ))}
@@ -295,9 +277,6 @@ export default function WorkExperienceSection() {
             Work <span>Experience</span>
           </h2>
 
-          <p className="section-subtitle">
-            Setiap pengalaman telah membentuk kemampuan dan perspektif saya dalam membangun solusi digital yang bermakna dan berdampak positif.
-          </p>
         </header>
 
         {/* Cards Container */}
