@@ -1,5 +1,4 @@
 <div align="center">
-  <img src="public/img/Mobile.webp" alt="Irvan Afriandi — Web Developer & Frontend Engineer" width="100%" />
 
   <h1>Irvan Afriandi · Portfolio</h1>
 
