@@ -9,39 +9,6 @@
   padding: 5rem 0 5.5rem;
 }
 
-.contact-grid-bg {
-  position: absolute;
-  inset: 0;
-  opacity: 0.3;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMiI+PHBhdGggZD0iTTM2IDM0djItSDI0di0yaDEyek0zNiAyNHYySDI0di0yaDEyeiIvPjwvZz48L2c+PC9zdmc+");
-}
-
-.contact-orb {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-  filter: blur(90px);
-  will-change: transform;
-  transform: translateZ(0);
-}
-
-.contact-orb--1 {
-  top: 10%;
-  right: -5%;
-  width: 380px;
-  height: 380px;
-  background: rgba(220, 38, 38, 0.1);
-}
-
-.contact-orb--2 {
-  bottom: 5%;
-  left: -8%;
-  width: 320px;
-  height: 320px;
-  background: rgba(185, 28, 28, 0.07);
-}
-
 .contact-inner {
   position: relative;
   z-index: 1;
@@ -55,6 +22,13 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 0.85rem;
+}
+
+/* Card - initial state for animation */
+.contact-card {
+  --accent: #dc2626;
+  opacity: 0;
+  transform: translateY(30px);
 }
 
 @media (min-width: 640px) {
@@ -72,33 +46,45 @@
   align-items: center;
   gap: 1rem;
   padding: 1.15rem 1.25rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.82);
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(220, 38, 38, 0.15);
   border-radius: 1.1rem;
   text-decoration: none;
   overflow: hidden;
-  transition: border-color 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 8px 24px rgba(83, 64, 40, 0.08);
 }
 
-.contact-card-shine {
+/* Glossy shine effect */
+.contact-card::before {
+  content: '';
   position: absolute;
   top: 0;
-  left: -100%;
-  width: 60%;
+  left: -130%;
+  width: 75%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
-  transition: left 0.6s ease;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transform: skewX(-25deg);
+  transition: left 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 5;
+  pointer-events: none;
 }
 
-.contact-card:hover .contact-card-shine {
-  left: 120%;
+.contact-card:hover::before {
+  left: 160%;
 }
 
 .contact-card:hover {
-  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  border-color: rgba(220, 38, 38, 0.5);
   transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35), 0 0 24px color-mix(in srgb, var(--accent) 12%, transparent);
+  box-shadow: 0 16px 40px rgba(220, 38, 38, 0.2);
 }
 
 .contact-card-icon {
@@ -106,20 +92,21 @@
   width: 2.75rem;
   height: 2.75rem;
   border-radius: 0.75rem;
-  background: rgba(220, 38, 38, 0.08);
-  border: 1px solid rgba(220, 38, 38, 0.18);
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.1rem;
-  color: var(--accent);
-  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+  color: #dc2626;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .contact-card:hover .contact-card-icon {
-  background: var(--accent);
-  color: #0a0a0a;
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  color: #fff;
   transform: scale(1.08) rotate(-4deg);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
 }
 
 .contact-card-body {
@@ -135,13 +122,14 @@
   font-family: monospace;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #737373;
+  color: #53606a;
+  font-weight: 600;
 }
 
 .contact-card-value {
   font-size: 0.88rem;
   font-weight: 600;
-  color: #fff;
+  color: #1d252c;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -149,14 +137,14 @@
 }
 
 .contact-card:hover .contact-card-value {
-  color: #ef4444;
+  color: #dc2626;
 }
 
 .contact-card-arrow {
   flex-shrink: 0;
   font-size: 1rem;
-  color: #525252;
-  transition: transform 0.3s ease, color 0.3s ease;
+  color: rgba(220, 38, 38, 0.5);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .contact-card:hover .contact-card-arrow {

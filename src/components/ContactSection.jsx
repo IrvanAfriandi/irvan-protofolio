@@ -11,54 +11,55 @@ const CONTACT_LINKS = [
   {
     icon: 'fab fa-github',
     label: 'GitHub',
-    value: '@rikorizky',
-    href: 'https://github.com/rikorizky',
+    value: '@IrvanAfriandi',
+    href: 'https://github.com/IrvanAfriandi',
     color: '#ffffff',
   },
   {
     icon: 'fas fa-envelope',
     label: 'Email',
-    value: 'rikorizky20@gmail.com',
-    href: 'mailto:rikorizky20@gmail.com',
+    value: 'irvan.afriandi21@gmail.com',
+    href: 'mailto:irvan.afriandi21@gmail.com',
     color: '#dc2626',
   },
   {
     icon: 'fab fa-instagram',
     label: 'Instagram',
-    value: '@sir_ikoo',
-    href: 'https://instagram.com/sir_ikoo',
+    value: '@riandivn',
+    href: 'https://instagram.com/riandivn',
     color: '#e1306c',
   },
   {
     icon: 'fab fa-linkedin-in',
     label: 'LinkedIn',
-    value: 'Riko Rizky',
-    href: 'https://www.linkedin.com/in/riko-rizky-baswara-921262338',
+    value: 'Irvan Afriandi',
+    href: 'https://www.linkedin.com/in/irvan21',
     color: '#0a66c2',
   },
 ];
 
 export default function ContactSection() {
   const sectionRef = useRef(null);
-  const headerRef = useRef(null);
   const cardsRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Cards animation
-      gsap.from('.contact-card', {
-        y: 50,
-        opacity: 0,
-        scale: 0.95,
-        duration: 0.6,
-        stagger: 0.1,
-        ease: 'back.out(1.4)',
-        scrollTrigger: {
-          trigger: cardsRef.current,
-          start: 'top 85%',
-          toggleActions: 'play none none reverse',
-        },
-      });
+      // Cards animation - only animate from opacity: 0 if not already visible
+      gsap.fromTo('.contact-card',
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: cardsRef.current,
+            start: 'top 85%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
     }, sectionRef);
 
     return () => ctx.revert();
@@ -70,7 +71,7 @@ export default function ContactSection() {
 
       <div className="contact-inner">
         {/* Unified Section Header */}
-        <header ref={headerRef} className="section-header">
+        <header className="section-header visible">
           <div className="section-label visible">
             <span className="section-line" />
             <span>Let's Connect</span>

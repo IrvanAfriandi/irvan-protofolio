@@ -13,11 +13,10 @@ const QUICK_LINKS = [
 ];
 
 const SOCIAL_LINKS = [
-  { icon: 'fab fa-github', href: 'https://github.com/rikorizky', label: 'GitHub Irvan Afriandi' },
-  { icon: 'fab fa-twitter', href: 'https://x.com/sir_ikoo', label: 'Twitter Riko Rizky' },
-  { icon: 'fab fa-facebook-f', href: 'https://www.facebook.com/riko.basawara', label: 'Facebook Irvan Afriandi' },
-  { icon: 'fab fa-instagram', href: 'https://instagram.com/callme_ikoo', label: 'Instagram callme_ikoo' },
-  { icon: 'fab fa-linkedin', href: 'https://id.linkedin.com/in/riko-rizky-baswara-921262338', label: 'LinkedIn Irvan Afriandi' },
+  { icon: 'fab fa-github', href: 'https://github.com/IrvanAfriandi', label: 'GitHub Irvan Afriandi' },
+  { icon: 'fab fa-facebook-f', href: 'https://www.facebook.com/Irvan Afriandi', label: 'Facebook Irvan Afriandi' },
+  { icon: 'fab fa-instagram', href: 'https://instagram.com/riandivn', label: 'Instagram Irvan Afriandi' },
+  { icon: 'fab fa-linkedin', href: 'https://id.linkedin.com/in/irvan21', label: 'LinkedIn Irvan Afriandi' },
 ];
 
 export default function Footer() {
@@ -149,11 +148,11 @@ export default function Footer() {
             <ul className="footer-contact">
               <li>
                 <i className="fas fa-envelope" />
-                <a href="mailto:rikorizky20@gmail.com" itemProp="email">rikorizky20@gmail.com</a>
+                <a href="mailto:irvan.afriandi21@gmail.com" itemProp="email">irvan.afriandi21@gmail.com</a>
               </li>
               <li>
                 <i className="fas fa-map-marker-alt" />
-                <span itemProp="homeLocation">Cirebon, Jawa Barat, Indonesia</span>
+                <span itemProp="homeLocation">Surakarta, central Java, Indonesia</span>
               </li>
             </ul>
           </div>
@@ -161,7 +160,7 @@ export default function Footer() {
 
         <div className="footer-bottom">
           <p className="footer-copy">
-            © {new Date().getFullYear()} - Riko Rizky. All Rights Reserved.
+            © {new Date().getFullYear()} - Irvan Afriandi. All Rights Reserved.
           </p>
           <button type="button" className="footer-top-btn" onClick={scrollToTop} aria-label="Back to top">
             <i className="fas fa-arrow-up" />
